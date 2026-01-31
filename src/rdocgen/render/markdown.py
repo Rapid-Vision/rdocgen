@@ -71,6 +71,56 @@ class MarkdownRenderer:
 
         return "\n".join(content).rstrip() + "\n"
 
+    def class_doc(self, cls: ClassDoc) -> str:
+        content: list[str] = [f"# {cls.name}", ""]
+        if cls.bases:
+            content.append(f"Inherits from: {', '.join(f'`{b}`' for b in cls.bases)}")
+            content.append("")
+
+        docstring = self._rewrite_docstring(cls.docstring)
+        if docstring:
+            content.append(docstring)
+            content.append("")
+
+        methods = self._filter_items(cls.methods, "function")
+        attributes = self._filter_items(cls.attributes, "attribute")
+
+        if methods:
+            content.append("## Methods")
+            content.append("")
+            for method in methods:
+                content.extend(self._function_markdown(method, heading_level=3))
+
+        if attributes:
+            content.append("## Attributes")
+            content.append("")
+            for attr in attributes:
+                content.extend(self._attribute_markdown(attr, heading_level=3))
+
+        return "\n".join(content).rstrip() + "\n"
+
+    def function_doc(self, func: FunctionDoc) -> str:
+        return "\n".join(self._function_markdown(func, heading_level=1)).rstrip() + "\n"
+
+    def enum_doc(self, enm: EnumDoc) -> str:
+        content = [f"# {enm.name}", ""]
+        docstring = self._rewrite_docstring(enm.docstring)
+        if docstring:
+            content.append(docstring)
+            content.append("")
+
+        if enm.variants:
+            content.append("## Variants")
+            content.append("")
+            for variant in enm.variants:
+                content.append(f"- `{variant.name}`")
+                if variant.comment:
+                    content.append(f"  - {variant.comment}")
+        return "\n".join(content).rstrip() + "\n"
+
+    def filter_items(self, items: Sequence, item_type: str) -> list:
+        return self._filter_items(items, item_type)
+
     def file_output_relpath(self, file_doc: FileDoc, module_prefix: str) -> str:
         base = os.path.basename(file_doc.path)
         stem = os.path.splitext(base)[0]
@@ -88,6 +138,15 @@ class MarkdownRenderer:
         elif not parts:
             parts.append(stem)
         return os.path.join(*parts)
+
+    def item_output_relpath(
+        self, file_doc: FileDoc, module_prefix: str, item_name: str
+    ) -> str:
+        rel = self.file_output_relpath(file_doc, module_prefix)
+        base_dir = os.path.dirname(rel)
+        if base_dir:
+            return os.path.join(base_dir, item_name)
+        return item_name
 
     def _section_for_classes(
         self, classes: Iterable[ClassDoc], *, section_level: int

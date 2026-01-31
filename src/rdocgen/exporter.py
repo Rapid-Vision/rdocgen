@@ -37,6 +37,43 @@ def export_project(project: ProjectDoc, outdir: str, options: ExportOptions) -> 
         with open(module_index, "w", encoding="utf-8") as fout:
             fout.write(renderer.module_index(module))
 
+        if options.render.split:
+            class_dir = os.path.join(module_dir, "classes")
+            func_dir = os.path.join(module_dir, "functions")
+            enum_dir = os.path.join(module_dir, "enums")
+            os.makedirs(class_dir, exist_ok=True)
+            os.makedirs(func_dir, exist_ok=True)
+            os.makedirs(enum_dir, exist_ok=True)
+
+            for file_doc in module.files:
+                for cls in renderer.filter_items(file_doc.classes, "class"):
+                    rel = renderer.item_output_relpath(file_doc, module.name, cls.name)
+                    out_path = os.path.join(
+                        class_dir, f"{rel}{options.render.extension}"
+                    )
+                    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+                    with open(out_path, "w", encoding="utf-8") as fout:
+                        fout.write(renderer.class_doc(cls))
+
+                for func in renderer.filter_items(file_doc.functions, "function"):
+                    rel = renderer.item_output_relpath(file_doc, module.name, func.name)
+                    out_path = os.path.join(
+                        func_dir, f"{rel}{options.render.extension}"
+                    )
+                    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+                    with open(out_path, "w", encoding="utf-8") as fout:
+                        fout.write(renderer.function_doc(func))
+
+                for enm in renderer.filter_items(file_doc.enums, "enum"):
+                    rel = renderer.item_output_relpath(file_doc, module.name, enm.name)
+                    out_path = os.path.join(
+                        enum_dir, f"{rel}{options.render.extension}"
+                    )
+                    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+                    with open(out_path, "w", encoding="utf-8") as fout:
+                        fout.write(renderer.enum_doc(enm))
+            continue
+
         for file_doc in module.files:
             relpath = renderer.file_output_relpath(file_doc, module.name)
             file_path = os.path.join(

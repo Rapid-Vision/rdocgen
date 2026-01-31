@@ -100,6 +100,11 @@ def main():
         help="Emit a single output file with all content.",
     )
     parser.add_argument(
+        "--split",
+        action="store_true",
+        help="Split output into separate files for classes, functions, and enums.",
+    )
+    parser.add_argument(
         "--index-title",
         default="Overview",
         help="Title for the root index page.",
@@ -160,6 +165,7 @@ def main():
         include_dunder=args.include_dunder,
         sort=args.sort,
         flatten=args.flatten,
+        split=args.split,
         index_title=args.index_title,
         docstring_style=args.docstring_style,
         code_fence_language=args.code_fence_language,

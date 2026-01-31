@@ -23,6 +23,7 @@ class RenderOptions:
     include_dunder: bool = False
     sort: str = "source-order"  # source-order, alpha
     flatten: bool = False
+    split: bool = False
     index_title: str = "Overview"
     docstring_style: str = "python-fences"  # raw, python-fences, preserve
     code_fence_language: str = "python"

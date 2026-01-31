@@ -31,6 +31,11 @@ rdocgen -c src -o ./out_docs \
   --index-title "API"
 ```
 
+### Split by kind
+```bash
+rdocgen -c src -o ./out_docs --split
+```
+
 ### Visibility and types
 ```bash
 rdocgen -c src -o ./out_docs \
@@ -58,6 +63,7 @@ rdocgen -c src -o ./out_docs \
 - `--include-types` / `--exclude-types`: Filter by `class,function,enum,attribute`.
 - `--sort`: `source-order` or `alpha`.
 - `--flatten`: Emit a single output file.
+- `--split`: Emit separate files for classes, functions, and enums.
 - `--index-title`: Override root index title.
 - `--docstring-style`: `raw`, `python-fences`, or `preserve`.
 - `--code-fence-language`: Default language for unlabeled fences.
