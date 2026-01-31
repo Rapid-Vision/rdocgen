@@ -1,5 +1,5 @@
 [project]
-name = "rdocs"
+name = "rdocgen"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -7,7 +7,7 @@ requires-python = ">=3.10"
 dependencies = []
 
 [project.scripts]
-rdocs = "rdocs:main"
+rdocgen = "rdocgen:main"
 
 [build-system]
 requires = ["uv_build>=0.9.10,<0.10.0"]
