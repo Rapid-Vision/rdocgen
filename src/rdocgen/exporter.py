@@ -31,14 +31,18 @@ def export_project(project: ProjectDoc, outdir: str, options: ExportOptions) -> 
     os.makedirs(modules_dir, exist_ok=True)
 
     for module in project.modules:
-        module_dir = os.path.join(modules_dir, module.name)
+        module_dir = os.path.join(modules_dir, *module.name.split("."))
         os.makedirs(module_dir, exist_ok=True)
         module_index = os.path.join(module_dir, f"index{options.render.extension}")
         with open(module_index, "w", encoding="utf-8") as fout:
             fout.write(renderer.module_index(module))
 
         for file_doc in module.files:
-            file_name = renderer._file_output_name(file_doc)
-            file_path = os.path.join(module_dir, f"{file_name}{options.render.extension}")
+            relpath = renderer.file_output_relpath(file_doc, module.name)
+            file_path = os.path.join(
+                module_dir,
+                f"{relpath}{options.render.extension}",
+            )
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
             with open(file_path, "w", encoding="utf-8") as fout:
                 fout.write(renderer.file_doc(file_doc))

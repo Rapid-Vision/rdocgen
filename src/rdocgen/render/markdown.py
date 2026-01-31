@@ -42,7 +42,7 @@ class MarkdownRenderer:
             content.append("_No files found._")
         else:
             for file_doc in module.files:
-                content.append(f"- `{self._file_output_name(file_doc)}`")
+                content.append(f"- `{self.file_output_relpath(file_doc, module.name)}`")
         content.append("")
         return "\n".join(content)
 
@@ -71,12 +71,23 @@ class MarkdownRenderer:
 
         return "\n".join(content).rstrip() + "\n"
 
-    def _file_output_name(self, file_doc: FileDoc) -> str:
+    def file_output_relpath(self, file_doc: FileDoc, module_prefix: str) -> str:
         base = os.path.basename(file_doc.path)
-        name = os.path.splitext(base)[0]
-        if name == "__init__":
-            return "index"
-        return name
+        stem = os.path.splitext(base)[0]
+        module_name = file_doc.module_name
+
+        rel = module_name
+        if module_prefix and module_name.startswith(f"{module_prefix}."):
+            rel = module_name[len(module_prefix) + 1 :]
+        elif module_name == module_prefix:
+            rel = ""
+
+        parts = [p for p in rel.split(".") if p]
+        if stem == "__init__":
+            parts.append("index")
+        elif not parts:
+            parts.append(stem)
+        return os.path.join(*parts)
 
     def _section_for_classes(
         self, classes: Iterable[ClassDoc], *, section_level: int

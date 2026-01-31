@@ -225,16 +225,21 @@ def parse_source(
 
 
 def parse_file(
-    path: str, encoding: str = "utf-8", *, fail_on_parse_error: bool = False
+    path: str,
+    encoding: str = "utf-8",
+    *,
+    module_name: Optional[str] = None,
+    fail_on_parse_error: bool = False,
 ) -> Optional[FileDoc]:
     """Parse a file path into a structured documentation tree."""
     file_path = Path(path)
     try:
         with file_path.open("r", encoding=encoding) as fin:
+            resolved_module_name = module_name or file_path.stem
             return parse_source(
                 fin.read(),
                 path=str(file_path),
-                module_name=file_path.stem,
+                module_name=resolved_module_name,
             )
     except SyntaxError:
         if fail_on_parse_error:

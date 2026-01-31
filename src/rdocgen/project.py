@@ -15,7 +15,11 @@ def build_project(path: str, options: ParseOptions) -> ProjectDoc:
         project = ProjectDoc(name=target.stem, root_path=str(target.resolve()))
         if path_allowed(target, target.parent, options):
             module = ModuleDoc(name=target.stem, path=str(target))
-            file_doc = parse_file(str(target), fail_on_parse_error=options.fail_on_parse_error)
+            file_doc = parse_file(
+                str(target),
+                module_name=target.stem,
+                fail_on_parse_error=options.fail_on_parse_error,
+            )
             if file_doc is not None:
                 module.files.append(file_doc)
                 project.modules.append(module)
@@ -33,11 +37,18 @@ def build_project(path: str, options: ParseOptions) -> ProjectDoc:
 def _discover_modules(root: Path, options: ParseOptions) -> List[ModuleDoc]:
     modules: dict[str, ModuleDoc] = {}
     for file_path in iter_python_files(root, options):
-        module_name = module_name_from_path(file_path, root=root, depth=options.module_depth)
+        module_name = module_name_from_path(
+            file_path, root=root, depth=options.module_depth
+        )
+        full_module_name = module_name_from_path(file_path, root=root, depth=None)
         group_name = module_name or file_path.stem
         if group_name not in modules:
             modules[group_name] = ModuleDoc(name=group_name, path=str(root / group_name))
-        file_doc = parse_file(str(file_path), fail_on_parse_error=options.fail_on_parse_error)
+        file_doc = parse_file(
+            str(file_path),
+            module_name=full_module_name or file_path.stem,
+            fail_on_parse_error=options.fail_on_parse_error,
+        )
         if file_doc is None:
             continue
         modules[group_name].files.append(file_doc)
