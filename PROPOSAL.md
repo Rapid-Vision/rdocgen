@@ -50,6 +50,44 @@
 - `--fail-on-parse-error` to abort on syntax errors.
 - `--ignore-parse-errors` to skip invalid files with warnings.
 
+## Modular Refactor Plan
+
+### Target Structure
+- `src/rdocgen/config.py`
+  - `ParseOptions`, `ExportOptions`, `RenderOptions`
+  - Validation helpers (e.g., `validate_options()`)
+- `src/rdocgen/model.py`
+  - Data classes only (`ProjectDoc`, `ModuleDoc`, `FileDoc`, `ClassDoc`, `FunctionDoc`, etc.)
+- `src/rdocgen/discovery.py`
+  - `iter_python_files(root, include, exclude, follow_symlinks)`
+  - `module_name_from_path(path, root, depth)`
+- `src/rdocgen/parser.py`
+  - `Parser` parses one file → `FileDoc`
+- `src/rdocgen/project.py`
+  - `build_project(root_or_file, options)` constructs Project → Module → File
+- `src/rdocgen/render/`
+  - `render/base.py`: `Renderer` interface
+  - `render/markdown.py`: Markdown renderer (plain/nextra)
+  - `render/json.py`: JSON exporter
+- `src/rdocgen/exporter.py`
+  - Manages output directories and writes files
+- `src/rdocgen/cli.py`
+  - CLI parsing only; calls `build_project` + `exporter`
+
+### Benefits
+- Each layer does one job (easier tests, faster iteration).
+- New output formats become plug-ins.
+- Parser is filesystem-agnostic.
+- Discovery is AST-agnostic.
+
+### Concrete Refactor Steps
+1. Extract data classes from `parser.py` → `model.py`.
+2. Move path traversal + filtering from `parser.py` → `discovery.py`.
+3. Make `parser.py` strictly “parse one file”.
+4. Add `project.py` to build the hierarchy from files.
+5. Split rendering from filesystem writing (`render/` vs `exporter.py`).
+6. Update CLI to use the new pipeline.
+
 ## Implementation Plan (initial)
 1. Add CLI flags and a config object for parser/exporter options.
 2. Implement include/exclude filtering and module depth control in parser.

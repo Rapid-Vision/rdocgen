@@ -5,8 +5,9 @@ The output is structured for use with the [Nextra site generator](https://nextra
 """
 
 import argparse
-from .docs import ExportOptions, export_docs
-from .parser import ParseOptions
+
+from .config import ExportOptions, ParseOptions, RenderOptions
+from .docs import export_docs
 
 
 def main():
@@ -20,7 +21,10 @@ def main():
     parser.add_argument(
         "-o",
         "--outdir",
-        help="Directory where the generated documentation will be saved. Warning: this directory will be deleted before export.",
+        help=(
+            "Directory where the generated documentation will be saved. "
+            "Warning: this directory will be deleted before export."
+        ),
         required=True,
     )
     parser.add_argument(
@@ -147,10 +151,9 @@ def main():
         module_depth=module_depth,
         fail_on_parse_error=args.fail_on_parse_error,
     )
-    export_options = ExportOptions(
+    render_options = RenderOptions(
         output_format=args.format,
         output_extension=args.output_extension or None,
-        clean=args.clean,
         include_types=include_types,
         exclude_types=exclude_types,
         include_private=args.include_private,
@@ -161,7 +164,11 @@ def main():
         docstring_style=args.docstring_style,
         code_fence_language=args.code_fence_language,
         show_line_numbers=not args.no_line_numbers,
-        parse_options=parse_options,
+    )
+    export_options = ExportOptions(
+        render=render_options,
+        parse=parse_options,
+        clean=args.clean,
     )
 
     export_docs(

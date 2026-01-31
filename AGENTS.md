@@ -8,14 +8,13 @@
 - `README.md`: Placeholder for product-level docs; keep in sync with CLI behavior.
 
 ## Development Setup
-- Requires Python 3.10+.
-- Install in editable mode: `python -m venv .venv && source .venv/bin/activate && pip install -e .`.
-- If you use `uv`, `uv pip install -e .` mirrors the above; `uv.lock` tracks resolved versions.
+- Requires Python 3.13+.
+- `uv` is used.
 
 ## Build, Test, and Development Commands
 - `rdocgen -c path/to/source.py -o ./out_docs --format md-nextra`: Generate docs for a module; `out_docs` is deleted before writing. Use `md-plain` to omit Nextra annotations.
 - `python -m rdocgen.cli -c ... -o ... --format md-plain`: Alternate invocation without the console script.
-- `uv build` (or `python -m build` if configured): Produce the wheel and sdist into `dist/`.
+- `uv build`: Produce the wheel and sdist into `dist/`.
 - Prefer running commands from the repo root to pick up the local package.
 
 ## Coding Style & Naming Conventions

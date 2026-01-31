@@ -7,99 +7,18 @@ data classes instead of the Python AST directly.
 import ast
 import io
 import tokenize
-from dataclasses import dataclass, field
-import fnmatch
 from pathlib import Path
-from typing import Iterable, List, Optional
+from typing import Optional
 
-
-@dataclass
-class ArgumentDoc:
-    name: str
-    annotation: Optional[str]
-    comment: str
-    lineno: int
-
-
-@dataclass
-class FunctionDoc:
-    name: str
-    docstring: str
-    arguments: List[ArgumentDoc]
-    returns: Optional[str]
-    returns_self: bool
-    decorators: List[str]
-    signature: str
-    lineno: int
-    is_private: bool
-
-
-@dataclass
-class AttributeDoc:
-    name: str
-    annotation: str
-    comment: str
-    lineno: int
-
-
-@dataclass
-class EnumVariantDoc:
-    name: str
-    comment: str
-    lineno: int
-
-
-@dataclass
-class EnumDoc:
-    name: str
-    docstring: str
-    variants: List[EnumVariantDoc]
-    lineno: int
-    is_private: bool
-
-
-@dataclass
-class ClassDoc:
-    name: str
-    bases: List[str]
-    docstring: str
-    methods: List[FunctionDoc]
-    attributes: List[AttributeDoc]
-    lineno: int
-    is_private: bool
-
-
-@dataclass
-class FileDoc:
-    path: str
-    module_name: str
-    docstring: str
-    classes: List[ClassDoc] = field(default_factory=list)
-    enums: List[EnumDoc] = field(default_factory=list)
-    functions: List[FunctionDoc] = field(default_factory=list)
-
-
-@dataclass
-class ModuleDoc:
-    name: str
-    path: str
-    files: List[FileDoc] = field(default_factory=list)
-
-
-@dataclass
-class ProjectDoc:
-    name: str
-    root_path: str
-    modules: List[ModuleDoc] = field(default_factory=list)
-
-
-@dataclass
-class ParseOptions:
-    include_paths: list[str] = field(default_factory=list)
-    exclude_paths: list[str] = field(default_factory=list)
-    follow_symlinks: bool = False
-    module_depth: Optional[int] = 1
-    fail_on_parse_error: bool = False
+from .model import (
+    ArgumentDoc,
+    AttributeDoc,
+    ClassDoc,
+    EnumDoc,
+    EnumVariantDoc,
+    FileDoc,
+    FunctionDoc,
+)
 
 
 class Parser:
@@ -131,7 +50,9 @@ class Parser:
                 parts.append(comment)
         return "\n".join(parts)
 
-    def _parse_arguments(self, func: ast.FunctionDef | ast.AsyncFunctionDef) -> list[ArgumentDoc]:
+    def _parse_arguments(
+        self, func: ast.FunctionDef | ast.AsyncFunctionDef
+    ) -> list[ArgumentDoc]:
         args: list[ArgumentDoc] = []
 
         def add_arg(arg: ast.arg, prefix: str = "") -> None:
@@ -161,7 +82,9 @@ class Parser:
 
         return args
 
-    def _parse_function(self, func: ast.FunctionDef | ast.AsyncFunctionDef) -> FunctionDoc:
+    def _parse_function(
+        self, func: ast.FunctionDef | ast.AsyncFunctionDef
+    ) -> FunctionDoc:
         return FunctionDoc(
             name=func.name,
             docstring=ast.get_docstring(func) or "",
@@ -294,7 +217,9 @@ def get_function_signature(node: ast.FunctionDef | ast.AsyncFunctionDef) -> str:
     return ast.unparse(new_node)[:-1]
 
 
-def parse_source(source: str, *, path: str = "<memory>", module_name: str = "<module>") -> FileDoc:
+def parse_source(
+    source: str, *, path: str = "<memory>", module_name: str = "<module>"
+) -> FileDoc:
     """Parse a Python source string into a structured documentation tree."""
     return Parser(source, path=path, module_name=module_name).parse()
 
@@ -309,140 +234,9 @@ def parse_file(
             return parse_source(
                 fin.read(),
                 path=str(file_path),
-                module_name=_module_name_from_path(file_path, root=file_path.parent),
+                module_name=file_path.stem,
             )
     except SyntaxError:
         if fail_on_parse_error:
             raise
         return None
-
-
-def parse_path(path: str, options: Optional[ParseOptions] = None) -> ProjectDoc:
-    """Parse a Python file or directory into a hierarchical documentation tree."""
-    if options is None:
-        options = ParseOptions()
-    target = Path(path)
-    if target.is_file():
-        project = ProjectDoc(
-            name=target.stem,
-            root_path=str(target.resolve()),
-        )
-        if _path_allowed(target, target.parent, options):
-            module = ModuleDoc(name=target.stem, path=str(target))
-            file_doc = _parse_file_with_options(str(target), options)
-            if file_doc is not None:
-                module.files.append(file_doc)
-                project.modules.append(module)
-        return project
-
-    if not target.is_dir():
-        raise FileNotFoundError(f"Path not found: {path}")
-
-    project = ProjectDoc(name=target.name, root_path=str(target.resolve()))
-    for module in _discover_modules(target, options):
-        project.modules.append(module)
-    return project
-
-
-def _discover_modules(root: Path, options: ParseOptions) -> List[ModuleDoc]:
-    modules: dict[str, ModuleDoc] = {}
-    for file_path in _iter_python_files(root, options):
-        module_name = _module_name_from_path(file_path, root=root, depth=options.module_depth)
-        group_name = module_name or file_path.stem
-        if group_name not in modules:
-            modules[group_name] = ModuleDoc(name=group_name, path=str(root / group_name))
-        file_doc = _parse_file_with_options(str(file_path), options)
-        if file_doc is None:
-            continue
-        modules[group_name].files.append(file_doc)
-    return sorted(modules.values(), key=lambda m: m.name)
-
-
-def _iter_python_files(root: Path, options: ParseOptions) -> Iterable[Path]:
-    for path in root.rglob("*.py", follow_symlinks=options.follow_symlinks):
-        if any(part.startswith(".") for part in path.parts):
-            continue
-        if "__pycache__" in path.parts:
-            continue
-        if ".venv" in path.parts or "venv" in path.parts:
-            continue
-        if "dist" in path.parts or "build" in path.parts:
-            continue
-        if not _path_allowed(path, root, options):
-            continue
-        yield path
-
-
-def _module_name_from_path(
-    path: Path, root: Optional[Path] = None, depth: Optional[int] = None
-) -> str:
-    base = path
-    if root is not None:
-        try:
-            base = path.relative_to(root)
-        except ValueError:
-            base = path
-    parts = list(base.with_suffix("").parts)
-    if parts and parts[-1] == "__init__":
-        parts = parts[:-1]
-    if depth is not None and depth > 0:
-        parts = parts[:depth]
-    return ".".join(parts)
-
-
-def _parse_file_with_options(path: str, options: ParseOptions) -> Optional[FileDoc]:
-    return parse_file(path, fail_on_parse_error=options.fail_on_parse_error)
-
-
-def _path_allowed(path: Path, root: Path, options: ParseOptions) -> bool:
-    relative = path
-    try:
-        relative = path.relative_to(root)
-    except ValueError:
-        relative = path
-    rel_str = relative.as_posix()
-    if options.include_paths:
-        if not any(fnmatch.fnmatch(rel_str, pattern) for pattern in options.include_paths):
-            return False
-    if options.exclude_paths:
-        if any(fnmatch.fnmatch(rel_str, pattern) for pattern in options.exclude_paths):
-            return False
-    return True
-
-
-def dumps(node, *, indent: int = 0) -> str:
-    """Debug-friendly dump of the documentation tree, similar to ast.dump."""
-
-    def _dump(obj, level: int) -> str:
-        pad = " " * (indent * level)
-        pad_next = " " * (indent * (level + 1))
-
-        if isinstance(obj, list):
-            if not obj:
-                return "[]"
-            if indent == 0:
-                inner = ", ".join(_dump(item, level + 1) for item in obj)
-                return f"[{inner}]"
-            inner = (",\n").join(f"{pad_next}{_dump(item, level + 1)}" for item in obj)
-            return f"[\n{inner}\n{pad}]"
-
-        if isinstance(obj, (str, int, bool)) or obj is None:
-            return repr(obj)
-
-        if hasattr(obj, "__dataclass_fields__"):
-            fields = []
-            for name in obj.__dataclass_fields__:
-                value = getattr(obj, name)
-                dumped = _dump(value, level + 1)
-                if indent == 0:
-                    fields.append(f"{name}={dumped}")
-                else:
-                    fields.append(f"{pad_next}{name}={dumped}")
-            if indent == 0:
-                return f"{obj.__class__.__name__}({', '.join(fields)})"
-            joined = (",\n").join(fields)
-            return f"{obj.__class__.__name__}(\n{joined}\n{pad})"
-
-        return repr(obj)
-
-    return _dump(node, indent)
