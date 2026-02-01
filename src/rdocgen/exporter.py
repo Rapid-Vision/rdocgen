@@ -37,7 +37,7 @@ def export_project(project: ProjectDoc, outdir: str, options: ExportOptions) -> 
         with open(module_index, "w", encoding="utf-8") as fout:
             fout.write(renderer.module_index(module))
 
-        if options.render.split:
+        if options.render.split != "off":
             class_dir = os.path.join(module_dir, "classes")
             func_dir = os.path.join(module_dir, "functions")
             enum_dir = os.path.join(module_dir, "enums")
@@ -72,7 +72,8 @@ def export_project(project: ProjectDoc, outdir: str, options: ExportOptions) -> 
                     os.makedirs(os.path.dirname(out_path), exist_ok=True)
                     with open(out_path, "w", encoding="utf-8") as fout:
                         fout.write(renderer.enum_doc(enm))
-            continue
+            if options.render.split == "only":
+                continue
 
         for file_doc in module.files:
             relpath = renderer.file_output_relpath(file_doc, module.name)

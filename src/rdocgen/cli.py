@@ -101,8 +101,14 @@ def main():
     )
     parser.add_argument(
         "--split",
-        action="store_true",
-        help="Split output into separate files for classes, functions, and enums.",
+        nargs="?",
+        const="only",
+        default="off",
+        choices=["off", "only", "hybrid"],
+        help=(
+            "Split output into separate files for classes, functions, and enums. "
+            "Use --split=hybrid to also emit per-file pages."
+        ),
     )
     parser.add_argument(
         "--index-title",
@@ -136,6 +142,9 @@ def main():
         help="Abort when a Python file fails to parse.",
     )
     args = parser.parse_args()
+
+    if args.split != "off" and args.flatten:
+        raise SystemExit("--split cannot be used with --flatten")
 
     include_types = [t.strip() for t in args.include_types.split(",") if t.strip()]
     exclude_types = [t.strip() for t in args.exclude_types.split(",") if t.strip()]

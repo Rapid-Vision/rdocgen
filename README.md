@@ -36,6 +36,13 @@ rdocgen -c src -o ./out_docs \
 rdocgen -c src -o ./out_docs --split
 ```
 
+### Split by kind + per-file pages
+```bash
+rdocgen -c src -o ./out_docs --split=hybrid
+```
+
+Note: `--split` cannot be combined with `--flatten`.
+
 ### Visibility and types
 ```bash
 rdocgen -c src -o ./out_docs \
@@ -63,7 +70,7 @@ rdocgen -c src -o ./out_docs \
 - `--include-types` / `--exclude-types`: Filter by `class,function,enum,attribute`.
 - `--sort`: `source-order` or `alpha`.
 - `--flatten`: Emit a single output file.
-- `--split`: Emit separate files for classes, functions, and enums.
+- `--split`: Emit separate files for classes, functions, and enums (`off`, `only`, `hybrid`).
 - `--index-title`: Override root index title.
 - `--docstring-style`: `raw`, `python-fences`, or `preserve`.
 - `--code-fence-language`: Default language for unlabeled fences.

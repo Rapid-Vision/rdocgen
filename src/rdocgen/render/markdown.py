@@ -37,7 +37,52 @@ class MarkdownRenderer:
         return "\n".join(content)
 
     def module_index(self, module: ModuleDoc) -> str:
-        content = [f"# Module: `{module.name}`", "", "## Files", ""]
+        content = [f"# Module: `{module.name}`", ""]
+
+        if self.options.split != "off":
+            content.append("## Classes")
+            content.append("")
+            class_items = []
+            for file_doc in module.files:
+                for cls in self._filter_items(file_doc.classes, "class"):
+                    rel = self.item_output_relpath(file_doc, module.name, cls.name)
+                    class_items.append(f"- `classes/{rel}`")
+            if class_items:
+                content.extend(class_items)
+            else:
+                content.append("_No classes found._")
+            content.append("")
+
+            content.append("## Functions")
+            content.append("")
+            function_items = []
+            for file_doc in module.files:
+                for func in self._filter_items(file_doc.functions, "function"):
+                    rel = self.item_output_relpath(file_doc, module.name, func.name)
+                    function_items.append(f"- `functions/{rel}`")
+            if function_items:
+                content.extend(function_items)
+            else:
+                content.append("_No functions found._")
+            content.append("")
+
+            content.append("## Enums")
+            content.append("")
+            enum_items = []
+            for file_doc in module.files:
+                for enm in self._filter_items(file_doc.enums, "enum"):
+                    rel = self.item_output_relpath(file_doc, module.name, enm.name)
+                    enum_items.append(f"- `enums/{rel}`")
+            if enum_items:
+                content.extend(enum_items)
+            else:
+                content.append("_No enums found._")
+            content.append("")
+            if self.options.split == "only":
+                return "\n".join(content)
+
+        content.append("## Files")
+        content.append("")
         if not module.files:
             content.append("_No files found._")
         else:
