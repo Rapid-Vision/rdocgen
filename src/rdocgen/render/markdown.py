@@ -27,6 +27,8 @@ class MarkdownRenderer:
     def project_index(
         self,
         project: ProjectDoc,  # project to render
+        *,
+        include_module_links: bool = True,  # whether to render module links
     ) -> str:
         """Render the root project index page."""
         content = [
@@ -39,12 +41,14 @@ class MarkdownRenderer:
         ]
         if not project.modules:
             content.append("_No modules found._")
-        else:
+        elif include_module_links:
             for module in project.modules:
                 module_path = os.path.join(
                     "modules", *module.name.split("."), f"index{self.options.extension}"
                 )
                 content.append(self._link(module.name, module_path))
+        else:
+            content.append("_Module links omitted in flattened output._")
         content.append("")
         return "\n".join(content)
 
@@ -267,9 +271,10 @@ class MarkdownRenderer:
         """Compute the relative output path for a class/function/enum item."""
         rel = self.file_output_relpath(file_doc, module_prefix)
         base_dir = os.path.dirname(rel)
+        file_stem = os.path.splitext(os.path.basename(file_doc.path))[0]
         if base_dir:
-            return os.path.join(base_dir, item_name)
-        return item_name
+            return os.path.join(base_dir, file_stem, item_name)
+        return os.path.join(file_stem, item_name)
 
     def _section_for_classes(
         self,

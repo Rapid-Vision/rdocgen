@@ -22,7 +22,12 @@ def export_project(
 
     index_path = os.path.join(outdir, f"index{options.render.extension}")
     with open(index_path, "w", encoding="utf-8") as fout:
-        fout.write(renderer.project_index(project))
+        fout.write(
+            renderer.project_index(
+                project,
+                include_module_links=not options.render.flatten,
+            )
+        )
 
     if options.render.flatten:
         with open(index_path, "a", encoding="utf-8") as fout:
