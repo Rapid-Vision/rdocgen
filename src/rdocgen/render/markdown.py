@@ -41,7 +41,10 @@ class MarkdownRenderer:
             content.append("_No modules found._")
         else:
             for module in project.modules:
-                content.append(f"- `{module.name}`")
+                module_path = os.path.join(
+                    "modules", *module.name.split("."), f"index{self.options.extension}"
+                )
+                content.append(self._link(module.name, module_path))
         content.append("")
         return "\n".join(content)
 
@@ -59,7 +62,12 @@ class MarkdownRenderer:
             for file_doc in module.files:
                 for cls in self._filter_items(file_doc.classes, "class"):
                     rel = self.item_output_relpath(file_doc, module.name, cls.name)
-                    class_items.append(f"- `classes/{rel}`")
+                    class_items.append(
+                        self._link(
+                            cls.name,
+                            os.path.join("classes", f"{rel}{self.options.extension}"),
+                        )
+                    )
             if class_items:
                 content.extend(class_items)
             else:
@@ -72,7 +80,12 @@ class MarkdownRenderer:
             for file_doc in module.files:
                 for func in self._filter_items(file_doc.functions, "function"):
                     rel = self.item_output_relpath(file_doc, module.name, func.name)
-                    function_items.append(f"- `functions/{rel}`")
+                    function_items.append(
+                        self._link(
+                            func.name,
+                            os.path.join("functions", f"{rel}{self.options.extension}"),
+                        )
+                    )
             if function_items:
                 content.extend(function_items)
             else:
@@ -85,7 +98,12 @@ class MarkdownRenderer:
             for file_doc in module.files:
                 for enm in self._filter_items(file_doc.enums, "enum"):
                     rel = self.item_output_relpath(file_doc, module.name, enm.name)
-                    enum_items.append(f"- `enums/{rel}`")
+                    enum_items.append(
+                        self._link(
+                            enm.name,
+                            os.path.join("enums", f"{rel}{self.options.extension}"),
+                        )
+                    )
             if enum_items:
                 content.extend(enum_items)
             else:
@@ -100,7 +118,15 @@ class MarkdownRenderer:
             content.append("_No files found._")
         else:
             for file_doc in module.files:
-                content.append(f"- `{self.file_output_relpath(file_doc, module.name)}`")
+                relpath = self.file_output_relpath(file_doc, module.name)
+                target = f"{relpath}{self.options.extension}"
+                label = f"`{os.path.basename(file_doc.path)}`"
+                content.append(
+                    self._link(
+                        label,
+                        target,
+                    )
+                )
         content.append("")
         return "\n".join(content)
 
@@ -134,6 +160,13 @@ class MarkdownRenderer:
         )
 
         return "\n".join(content).rstrip() + "\n"
+
+    def _link(
+        self,
+        label: str,  # label shown in markdown
+        relpath: str,  # relative path to the target file
+    ) -> str:
+        return f"- [{label}]({relpath})"
 
     def class_doc(
         self,
@@ -220,7 +253,7 @@ class MarkdownRenderer:
 
         parts = [p for p in rel.split(".") if p]
         if stem == "__init__":
-            parts.append("index")
+            parts.append("__init__")
         elif not parts:
             parts.append(stem)
         return os.path.join(*parts)
