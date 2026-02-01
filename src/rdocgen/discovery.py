@@ -8,9 +8,14 @@ from typing import Iterable, Optional
 from .config import ParseOptions
 
 
-def iter_python_files(root: Path, options: ParseOptions) -> Iterable[Path]:
+def iter_python_files(
+    root: Path,  # directory root to scan for Python files
+    options: ParseOptions,  # traversal filters and symlink behavior
+) -> Iterable[Path]:
     """Yield Python files under root, applying include/exclude rules."""
-    for dirpath, dirnames, filenames in os.walk(root, followlinks=options.follow_symlinks):
+    for dirpath, dirnames, filenames in os.walk(
+        root, followlinks=options.follow_symlinks
+    ):
         dir_path = Path(dirpath)
         if any(part.startswith(".") for part in dir_path.parts):
             dirnames[:] = []
@@ -35,7 +40,9 @@ def iter_python_files(root: Path, options: ParseOptions) -> Iterable[Path]:
 
 
 def module_name_from_path(
-    path: Path, root: Optional[Path] = None, depth: Optional[int] = None
+    path: Path,  # file path to convert
+    root: Optional[Path] = None,  # root used to compute relative module path
+    depth: Optional[int] = None,  # maximum number of module path segments
 ) -> str:
     """Convert a file path into a dotted module path, with optional depth."""
     base = path
@@ -52,7 +59,11 @@ def module_name_from_path(
     return ".".join(parts)
 
 
-def path_allowed(path: Path, root: Path, options: ParseOptions) -> bool:
+def path_allowed(
+    path: Path,  # candidate file path
+    root: Path,  # root used to compute relative globs
+    options: ParseOptions,  # include/exclude filters
+) -> bool:
     """Return True if a path matches include/exclude filters."""
     relative = path
     try:
@@ -61,7 +72,9 @@ def path_allowed(path: Path, root: Path, options: ParseOptions) -> bool:
         relative = path
     rel_str = relative.as_posix()
     if options.include_paths:
-        if not any(fnmatch.fnmatch(rel_str, pattern) for pattern in options.include_paths):
+        if not any(
+            fnmatch.fnmatch(rel_str, pattern) for pattern in options.include_paths
+        ):
             return False
     if options.exclude_paths:
         if any(fnmatch.fnmatch(rel_str, pattern) for pattern in options.exclude_paths):

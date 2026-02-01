@@ -8,7 +8,11 @@ from .model import ProjectDoc
 from .render.markdown import MarkdownRenderer
 
 
-def export_project(project: ProjectDoc, outdir: str, options: ExportOptions) -> None:
+def export_project(
+    project: ProjectDoc,  # parsed project tree to export
+    outdir: str,  # output directory
+    options: ExportOptions,  # render/export configuration
+) -> None:
     """Write a ProjectDoc to disk using the configured renderer."""
     renderer = MarkdownRenderer(options.render)
 

@@ -23,14 +23,22 @@ from .model import (
 
 class Parser:
     """Parse a single Python source file into documentation data classes."""
-    def __init__(self, source: str, *, path: str, module_name: str) -> None:
+    def __init__(
+        self,
+        source: str,  # source code text to parse
+        *,
+        path: str,  # source path for diagnostics
+        module_name: str,  # dotted module path for this file
+    ) -> None:
         self.source = source
         self.path = path
         self.module_name = module_name
         self.module = ast.parse(source)
         self.comments = self._collect_comments(source)
 
-    def _collect_comments(self, src: str) -> dict[int, str]:
+    def _collect_comments(
+        self, src: str  # source code text to scan for comments
+    ) -> dict[int, str]:
         comments: dict[int, str] = {}
         tokens = tokenize.generate_tokens(io.StringIO(src).readline)
         for tok_type, tok_string, start, _, _ in tokens:
@@ -38,7 +46,9 @@ class Parser:
                 comments[start[0]] = tok_string[1:].strip()
         return comments
 
-    def _node_comments(self, node: ast.AST) -> str:
+    def _node_comments(
+        self, node: ast.AST  # AST node whose lines are scanned for comments
+    ) -> str:
         start = getattr(node, "lineno", None)
         end = getattr(node, "end_lineno", start)
         if start is None or end is None:
@@ -52,11 +62,14 @@ class Parser:
         return "\n".join(parts)
 
     def _parse_arguments(
-        self, func: ast.FunctionDef | ast.AsyncFunctionDef
+        self, func: ast.FunctionDef | ast.AsyncFunctionDef  # function node to inspect
     ) -> list[ArgumentDoc]:
         args: list[ArgumentDoc] = []
 
-        def add_arg(arg: ast.arg, prefix: str = "") -> None:
+        def add_arg(
+            arg: ast.arg,  # argument node to add
+            prefix: str = "",  # prefix to apply for var/kw args
+        ) -> None:
             name = f"{prefix}{arg.arg}"
             ann = ast.unparse(arg.annotation) if arg.annotation else None
             comment = self._node_comments(arg)
@@ -84,7 +97,7 @@ class Parser:
         return args
 
     def _parse_function(
-        self, func: ast.FunctionDef | ast.AsyncFunctionDef
+        self, func: ast.FunctionDef | ast.AsyncFunctionDef  # function node to parse
     ) -> FunctionDoc:
         return FunctionDoc(
             name=func.name,
@@ -98,7 +111,9 @@ class Parser:
             is_private=func.name.startswith("_"),
         )
 
-    def _parse_attribute(self, assign: ast.AnnAssign) -> AttributeDoc:
+    def _parse_attribute(
+        self, assign: ast.AnnAssign  # annotated assignment to parse
+    ) -> AttributeDoc:
         annotation = ast.unparse(assign.annotation)
         return AttributeDoc(
             name=assign.target.id if isinstance(assign.target, ast.Name) else "",
@@ -107,7 +122,9 @@ class Parser:
             lineno=assign.lineno,
         )
 
-    def _parse_class(self, class_node: ast.ClassDef) -> ClassDoc:
+    def _parse_class(
+        self, class_node: ast.ClassDef  # class node to parse
+    ) -> ClassDoc:
         methods = [
             self._parse_function(method)
             for method in class_node.body
@@ -130,7 +147,9 @@ class Parser:
             is_private=class_node.name.startswith("_"),
         )
 
-    def _parse_enum(self, class_node: ast.ClassDef) -> EnumDoc:
+    def _parse_enum(
+        self, class_node: ast.ClassDef  # enum class node to parse
+    ) -> EnumDoc:
         variants: list[EnumVariantDoc] = []
         for node in class_node.body:
             if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name):
@@ -168,7 +187,9 @@ class Parser:
         return module_doc
 
 
-def is_enum_class(class_node) -> bool:
+def is_enum_class(
+    class_node: ast.AST  # candidate class node to test for Enum inheritance
+) -> bool:
     """Check if a class inherits from Enum (by name)."""
     if not isinstance(class_node, ast.ClassDef):
         return False
@@ -181,7 +202,9 @@ def is_enum_class(class_node) -> bool:
     return False
 
 
-def check_function_returns_self(func: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
+def check_function_returns_self(
+    func: ast.FunctionDef | ast.AsyncFunctionDef  # function node to analyze
+) -> bool:
     count = 0
     for stmt in func.body:
         for node in ast.walk(stmt):
@@ -195,7 +218,9 @@ def check_function_returns_self(func: ast.FunctionDef | ast.AsyncFunctionDef) ->
     return True
 
 
-def get_function_signature(node: ast.FunctionDef | ast.AsyncFunctionDef) -> str:
+def get_function_signature(
+    node: ast.FunctionDef | ast.AsyncFunctionDef  # function node to stringify
+) -> str:
     if isinstance(node, ast.AsyncFunctionDef):
         new_node = ast.AsyncFunctionDef(
             name=node.name,
@@ -219,18 +244,21 @@ def get_function_signature(node: ast.FunctionDef | ast.AsyncFunctionDef) -> str:
 
 
 def parse_source(
-    source: str, *, path: str = "<memory>", module_name: str = "<module>"
+    source: str,  # source code text to parse
+    *,
+    path: str = "<memory>",  # source path for diagnostics
+    module_name: str = "<module>",  # dotted module path for this file
 ) -> FileDoc:
     """Parse a Python source string into a structured documentation tree."""
     return Parser(source, path=path, module_name=module_name).parse()
 
 
 def parse_file(
-    path: str,
-    encoding: str = "utf-8",
+    path: str,  # file path to parse
+    encoding: str = "utf-8",  # file encoding
     *,
-    module_name: Optional[str] = None,
-    fail_on_parse_error: bool = False,
+    module_name: Optional[str] = None,  # dotted module path for this file
+    fail_on_parse_error: bool = False,  # raise if a SyntaxError occurs
 ) -> Optional[FileDoc]:
     """Parse a file path into a structured documentation tree."""
     file_path = Path(path)

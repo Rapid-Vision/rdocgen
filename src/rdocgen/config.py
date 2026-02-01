@@ -32,7 +32,9 @@ class RenderOptions:
     show_line_numbers: bool = True
 
     @property
-    def extension(self) -> str:
+    def extension(
+        self,  # render options instance
+    ) -> str:
         if self.output_extension:
             return self.output_extension
         return ".mdx" if self.output_format == "md-nextra" else ".md"

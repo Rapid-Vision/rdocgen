@@ -18,10 +18,16 @@ from ..model import (
 class MarkdownRenderer:
     """Render Project/Module/File docs into Markdown or Nextra-flavored Markdown."""
 
-    def __init__(self, options: RenderOptions) -> None:
+    def __init__(
+        self,
+        options: RenderOptions,  # rendering configuration
+    ) -> None:
         self.options = options
 
-    def project_index(self, project: ProjectDoc) -> str:
+    def project_index(
+        self,
+        project: ProjectDoc,  # project to render
+    ) -> str:
         """Render the root project index page."""
         content = [
             f"# {self.options.index_title}",
@@ -39,7 +45,10 @@ class MarkdownRenderer:
         content.append("")
         return "\n".join(content)
 
-    def module_index(self, module: ModuleDoc) -> str:
+    def module_index(
+        self,
+        module: ModuleDoc,  # module to render
+    ) -> str:
         """Render a module index page, optionally listing split outputs."""
         content = [f"# Module: `{module.name}`", ""]
 
@@ -95,7 +104,12 @@ class MarkdownRenderer:
         content.append("")
         return "\n".join(content)
 
-    def file_doc(self, file_doc: FileDoc, *, heading_level: int = 1) -> str:
+    def file_doc(
+        self,
+        file_doc: FileDoc,  # file to render
+        *,
+        heading_level: int = 1,  # heading level for top title
+    ) -> str:
         """Render a single file page with classes, enums, and functions."""
         file_heading = "#" * heading_level
         content: list[str] = [
@@ -121,7 +135,10 @@ class MarkdownRenderer:
 
         return "\n".join(content).rstrip() + "\n"
 
-    def class_doc(self, cls: ClassDoc) -> str:
+    def class_doc(
+        self,
+        cls: ClassDoc,  # class to render
+    ) -> str:
         """Render a standalone class page."""
         content: list[str] = [f"# {cls.name}", ""]
         if cls.bases:
@@ -150,11 +167,17 @@ class MarkdownRenderer:
 
         return "\n".join(content).rstrip() + "\n"
 
-    def function_doc(self, func: FunctionDoc) -> str:
+    def function_doc(
+        self,
+        func: FunctionDoc,  # function to render
+    ) -> str:
         """Render a standalone function page."""
         return "\n".join(self._function_markdown(func, heading_level=1)).rstrip() + "\n"
 
-    def enum_doc(self, enm: EnumDoc) -> str:
+    def enum_doc(
+        self,
+        enm: EnumDoc,  # enum to render
+    ) -> str:
         """Render a standalone enum page."""
         content = [f"# {enm.name}", ""]
         docstring = self._rewrite_docstring(enm.docstring)
@@ -171,11 +194,19 @@ class MarkdownRenderer:
                     content.append(f"  - {variant.comment}")
         return "\n".join(content).rstrip() + "\n"
 
-    def filter_items(self, items: Sequence, item_type: str) -> list:
+    def filter_items(
+        self,
+        items: Sequence,  # list of items to filter
+        item_type: str,  # item type label (class/function/enum/attribute)
+    ) -> list:
         """Public wrapper around item filtering used by exporters."""
         return self._filter_items(items, item_type)
 
-    def file_output_relpath(self, file_doc: FileDoc, module_prefix: str) -> str:
+    def file_output_relpath(
+        self,
+        file_doc: FileDoc,  # source file doc
+        module_prefix: str,  # module grouping prefix
+    ) -> str:
         """Compute the relative output path for a file within a module."""
         base = os.path.basename(file_doc.path)
         stem = os.path.splitext(base)[0]
@@ -195,7 +226,10 @@ class MarkdownRenderer:
         return os.path.join(*parts)
 
     def item_output_relpath(
-        self, file_doc: FileDoc, module_prefix: str, item_name: str
+        self,
+        file_doc: FileDoc,  # source file doc
+        module_prefix: str,  # module grouping prefix
+        item_name: str,  # class/function/enum name
     ) -> str:
         """Compute the relative output path for a class/function/enum item."""
         rel = self.file_output_relpath(file_doc, module_prefix)
@@ -205,7 +239,10 @@ class MarkdownRenderer:
         return item_name
 
     def _section_for_classes(
-        self, classes: Iterable[ClassDoc], *, section_level: int
+        self,
+        classes: Iterable[ClassDoc],  # classes to render
+        *,
+        section_level: int,  # heading level for the section
     ) -> list[str]:
         classes = list(classes)
         if not classes:
@@ -249,7 +286,10 @@ class MarkdownRenderer:
         return content
 
     def _section_for_enums(
-        self, enums: Iterable[EnumDoc], *, section_level: int
+        self,
+        enums: Iterable[EnumDoc],  # enums to render
+        *,
+        section_level: int,  # heading level for the section
     ) -> list[str]:
         enums = list(enums)
         if not enums:
@@ -276,7 +316,10 @@ class MarkdownRenderer:
         return content
 
     def _section_for_functions(
-        self, functions: Iterable[FunctionDoc], *, section_level: int
+        self,
+        functions: Iterable[FunctionDoc],  # functions to render
+        *,
+        section_level: int,  # heading level for the section
     ) -> list[str]:
         functions = list(functions)
         if not functions:
@@ -289,7 +332,12 @@ class MarkdownRenderer:
             )
         return content
 
-    def _function_markdown(self, func: FunctionDoc, *, heading_level: int) -> list[str]:
+    def _function_markdown(
+        self,
+        func: FunctionDoc,  # function to render
+        *,
+        heading_level: int,  # heading level for the title
+    ) -> list[str]:
         heading = "#" * heading_level
         content = [f"{heading} {func.name}", ""]
 
@@ -326,7 +374,10 @@ class MarkdownRenderer:
         return content
 
     def _attribute_markdown(
-        self, attr: AttributeDoc, *, heading_level: int
+        self,
+        attr: AttributeDoc,  # attribute to render
+        *,
+        heading_level: int,  # heading level for the title
     ) -> list[str]:
         heading = "#" * heading_level
         content = [f"{heading} `{attr.name}`", ""]
@@ -337,7 +388,11 @@ class MarkdownRenderer:
             content.append("")
         return content
 
-    def _filter_items(self, items: Sequence, item_type: str) -> list:
+    def _filter_items(
+        self,
+        items: Sequence,  # items to filter
+        item_type: str,  # item type label (class/function/enum/attribute)
+    ) -> list:
         include_types = set(self.options.include_types)
         exclude_types = set(self.options.exclude_types)
         if include_types and item_type not in include_types:
@@ -356,32 +411,42 @@ class MarkdownRenderer:
             filtered.sort(key=lambda obj: getattr(obj, "name", "").lower())
         return filtered
 
-    def _name_allowed(self, name: str) -> bool:
+    def _name_allowed(
+        self, name: str  # item name to check visibility rules
+    ) -> bool:
         if name.startswith("__") and name.endswith("__"):
             return self.options.include_dunder
         if name.startswith("_"):
             return self.options.include_private
         return True
 
-    def _returns_line(self, func: FunctionDoc) -> str | None:
+    def _returns_line(
+        self, func: FunctionDoc  # function to render return info for
+    ) -> str | None:
         if func.returns_self:
             return f"**Returns**: {self._inline_type('Self')}"
         if func.returns:
             return f"**Returns**: {self._inline_type(func.returns)}"
         return None
 
-    def _inline_type(self, annotation: str) -> str:
+    def _inline_type(
+        self, annotation: str  # type annotation to format
+    ) -> str:
         if self.options.output_format == "md-nextra":
             return f"`{annotation}{{:python}}`"
         return f"`{annotation}`"
 
-    def _code_block(self, code: str) -> str:
+    def _code_block(
+        self, code: str  # code to wrap in a fenced block
+    ) -> str:
         if self.options.output_format == "md-nextra":
             suffix = " showLineNumbers" if self.options.show_line_numbers else ""
             return f"```python copy{suffix}\n{code}\n```"
         return f"```python\n{code}\n```"
 
-    def _rewrite_docstring(self, docstring: str) -> str:
+    def _rewrite_docstring(
+        self, docstring: str  # docstring text to rewrite
+    ) -> str:
         if not docstring:
             return ""
         if self.options.output_format == "md-plain":
@@ -407,7 +472,9 @@ class MarkdownRenderer:
                 output.append(line)
         return "\n".join(output)
 
-    def _rewrite_opening_fence(self, fence: str) -> str:
+    def _rewrite_opening_fence(
+        self, fence: str  # opening fence line to rewrite
+    ) -> str:
         suffix = " showLineNumbers" if self.options.show_line_numbers else ""
         if self.options.docstring_style == "preserve":
             if "copy" in fence:
