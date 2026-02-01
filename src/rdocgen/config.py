@@ -6,6 +6,7 @@ from typing import Optional
 
 @dataclass
 class ParseOptions:
+    """Configuration for filesystem traversal and parsing behavior."""
     include_paths: list[str] = field(default_factory=list)
     exclude_paths: list[str] = field(default_factory=list)
     follow_symlinks: bool = False
@@ -15,6 +16,7 @@ class ParseOptions:
 
 @dataclass
 class RenderOptions:
+    """Configuration for how parsed docs are rendered into markdown."""
     output_format: str = "md-nextra"
     output_extension: str | None = None
     include_types: list[str] = field(default_factory=list)
@@ -38,6 +40,7 @@ class RenderOptions:
 
 @dataclass
 class ExportOptions:
+    """Top-level export configuration (parse + render + output behavior)."""
     render: RenderOptions = field(default_factory=RenderOptions)
     parse: ParseOptions = field(default_factory=ParseOptions)
     clean: bool = True

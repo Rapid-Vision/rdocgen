@@ -22,6 +22,7 @@ from .model import (
 
 
 class Parser:
+    """Parse a single Python source file into documentation data classes."""
     def __init__(self, source: str, *, path: str, module_name: str) -> None:
         self.source = source
         self.path = path

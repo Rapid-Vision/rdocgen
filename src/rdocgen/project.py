@@ -10,6 +10,7 @@ from .parser import parse_file
 
 
 def build_project(path: str, options: ParseOptions) -> ProjectDoc:
+    """Build a ProjectDoc from a file path or a directory root."""
     target = Path(path)
     if target.is_file():
         project = ProjectDoc(name=target.stem, root_path=str(target.resolve()))
@@ -35,6 +36,7 @@ def build_project(path: str, options: ParseOptions) -> ProjectDoc:
 
 
 def _discover_modules(root: Path, options: ParseOptions) -> List[ModuleDoc]:
+    """Group parsed files into ModuleDoc buckets by module depth."""
     modules: dict[str, ModuleDoc] = {}
     for file_path in iter_python_files(root, options):
         module_name = module_name_from_path(

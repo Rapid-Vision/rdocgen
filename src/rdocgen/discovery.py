@@ -9,6 +9,7 @@ from .config import ParseOptions
 
 
 def iter_python_files(root: Path, options: ParseOptions) -> Iterable[Path]:
+    """Yield Python files under root, applying include/exclude rules."""
     for dirpath, dirnames, filenames in os.walk(root, followlinks=options.follow_symlinks):
         dir_path = Path(dirpath)
         if any(part.startswith(".") for part in dir_path.parts):
@@ -36,6 +37,7 @@ def iter_python_files(root: Path, options: ParseOptions) -> Iterable[Path]:
 def module_name_from_path(
     path: Path, root: Optional[Path] = None, depth: Optional[int] = None
 ) -> str:
+    """Convert a file path into a dotted module path, with optional depth."""
     base = path
     if root is not None:
         try:
@@ -51,6 +53,7 @@ def module_name_from_path(
 
 
 def path_allowed(path: Path, root: Path, options: ParseOptions) -> bool:
+    """Return True if a path matches include/exclude filters."""
     relative = path
     try:
         relative = path.relative_to(root)

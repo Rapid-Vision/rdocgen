@@ -9,6 +9,7 @@ from .render.markdown import MarkdownRenderer
 
 
 def export_project(project: ProjectDoc, outdir: str, options: ExportOptions) -> None:
+    """Write a ProjectDoc to disk using the configured renderer."""
     renderer = MarkdownRenderer(options.render)
 
     if os.path.exists(outdir) and options.clean:

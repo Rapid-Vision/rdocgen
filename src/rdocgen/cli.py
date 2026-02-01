@@ -11,6 +11,7 @@ from .docs import export_docs
 
 
 def main():
+    """CLI entrypoint for rdocgen."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-c",

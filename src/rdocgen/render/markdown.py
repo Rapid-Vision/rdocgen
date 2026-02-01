@@ -16,10 +16,13 @@ from ..model import (
 
 
 class MarkdownRenderer:
+    """Render Project/Module/File docs into Markdown or Nextra-flavored Markdown."""
+
     def __init__(self, options: RenderOptions) -> None:
         self.options = options
 
     def project_index(self, project: ProjectDoc) -> str:
+        """Render the root project index page."""
         content = [
             f"# {self.options.index_title}",
             "",
@@ -37,6 +40,7 @@ class MarkdownRenderer:
         return "\n".join(content)
 
     def module_index(self, module: ModuleDoc) -> str:
+        """Render a module index page, optionally listing split outputs."""
         content = [f"# Module: `{module.name}`", ""]
 
         if self.options.split != "off":
@@ -92,6 +96,7 @@ class MarkdownRenderer:
         return "\n".join(content)
 
     def file_doc(self, file_doc: FileDoc, *, heading_level: int = 1) -> str:
+        """Render a single file page with classes, enums, and functions."""
         file_heading = "#" * heading_level
         content: list[str] = [
             f"{file_heading} File: `{os.path.basename(file_doc.path)}`",
@@ -117,6 +122,7 @@ class MarkdownRenderer:
         return "\n".join(content).rstrip() + "\n"
 
     def class_doc(self, cls: ClassDoc) -> str:
+        """Render a standalone class page."""
         content: list[str] = [f"# {cls.name}", ""]
         if cls.bases:
             content.append(f"Inherits from: {', '.join(f'`{b}`' for b in cls.bases)}")
@@ -145,9 +151,11 @@ class MarkdownRenderer:
         return "\n".join(content).rstrip() + "\n"
 
     def function_doc(self, func: FunctionDoc) -> str:
+        """Render a standalone function page."""
         return "\n".join(self._function_markdown(func, heading_level=1)).rstrip() + "\n"
 
     def enum_doc(self, enm: EnumDoc) -> str:
+        """Render a standalone enum page."""
         content = [f"# {enm.name}", ""]
         docstring = self._rewrite_docstring(enm.docstring)
         if docstring:
@@ -164,9 +172,11 @@ class MarkdownRenderer:
         return "\n".join(content).rstrip() + "\n"
 
     def filter_items(self, items: Sequence, item_type: str) -> list:
+        """Public wrapper around item filtering used by exporters."""
         return self._filter_items(items, item_type)
 
     def file_output_relpath(self, file_doc: FileDoc, module_prefix: str) -> str:
+        """Compute the relative output path for a file within a module."""
         base = os.path.basename(file_doc.path)
         stem = os.path.splitext(base)[0]
         module_name = file_doc.module_name
@@ -187,6 +197,7 @@ class MarkdownRenderer:
     def item_output_relpath(
         self, file_doc: FileDoc, module_prefix: str, item_name: str
     ) -> str:
+        """Compute the relative output path for a class/function/enum item."""
         rel = self.file_output_relpath(file_doc, module_prefix)
         base_dir = os.path.dirname(rel)
         if base_dir:
