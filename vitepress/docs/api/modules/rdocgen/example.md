@@ -6,7 +6,7 @@ It doesn't have any useful functions or classes but is meant to represent everyt
 
 ## Classes
 
-### `class ExampleClass`
+### `class ExampleClass` {#class-exampleclass}
 This is an example of class doc generation
 
 ::: details Attributes
@@ -59,7 +59,7 @@ def rename(self, new_name: str) -> 'ExampleClass'
 
 ## Enums
 
-### ExampleEnum
+### ExampleEnum {#enum-exampleenum}
 This is an example enum used for variant rendering.
 
 ::: details Variants
@@ -75,7 +75,7 @@ This is an example enum used for variant rendering.
 
 ## Functions
 
-### `example_function`
+### `example_function` {#function-example-function}
 
 Format a value with an optional label.
 
@@ -96,7 +96,7 @@ def example_function(value: int, label: Optional[str]=None) -> str
 
 :::
 
-### `example_returns_self`
+### `example_returns_self` {#function-example-returns-self}
 
 Example of a function returning a new instance.
 

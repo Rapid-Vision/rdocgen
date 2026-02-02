@@ -4,7 +4,7 @@ High-level export API for rdocgen.
 
 ## Functions
 
-### `export_docs`
+### `export_docs` {#function-export-docs}
 
 High-level entrypoint: parse sources and export documentation.
 

@@ -4,7 +4,7 @@ Configuration dataclasses for parsing and rendering.
 
 ## Classes
 
-### `class ParseOptions`
+### `class ParseOptions` {#class-parseoptions}
 Configuration for filesystem traversal and parsing behavior.
 
 ::: details Attributes
@@ -22,7 +22,7 @@ Configuration for filesystem traversal and parsing behavior.
 
 ---
 
-### `class RenderOptions`
+### `class RenderOptions` {#class-renderoptions}
 Configuration for how parsed docs are rendered into markdown.
 
 ::: details Attributes
@@ -36,7 +36,6 @@ Configuration for how parsed docs are rendered into markdown.
 | `include_dunder` | `bool` | include __dunder__ names |
 | `sort` | `Literal['source-order', 'alpha']` | order of definitions |
 | `flatten` | `bool` | emit a single output file |
-| `split` | `Literal['off', 'only', 'hybrid']` | split output mode |
 | `index_title` | `str` | title for root index page |
 | `docstring_style` | `str` | raw, python-fences, preserve |
 | `code_fence_language` | `str` | language for unlabeled fences |
@@ -64,7 +63,7 @@ def extension(self) -> str
 
 ---
 
-### `class ExportOptions`
+### `class ExportOptions` {#class-exportoptions}
 Top-level export configuration (parse + render + output behavior).
 
 ::: details Attributes

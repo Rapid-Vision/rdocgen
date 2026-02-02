@@ -4,7 +4,7 @@ Markdown renderer for rdocgen outputs.
 
 ## Classes
 
-### `class MarkdownRenderer`
+### `class MarkdownRenderer` {#class-markdownrenderer}
 Render Project/Module/File docs into Markdown.
 
 ::: details Methods
@@ -28,7 +28,7 @@ def project_index(self, project: ProjectDoc, *, include_module_links: bool=True)
 
 ##### `module_index`
 
-Render a module index page, optionally listing split outputs.
+Render a module index page with file links and item anchors.
 
 **Signature**
 
@@ -138,24 +138,6 @@ def file_output_relpath(self, file_doc: FileDoc, module_prefix: str) -> str
 
 - **`file_doc`** : `FileDoc` — source file doc
 - **`module_prefix`** : `str` — module grouping prefix
-
-**Returns**: `str`
-
-##### `item_output_relpath`
-
-Compute the relative output path for a class/function/enum item.
-
-**Signature**
-
-```python
-def item_output_relpath(self, file_doc: FileDoc, module_prefix: str, item_name: str) -> str
-```
-
-**Arguments**
-
-- **`file_doc`** : `FileDoc` — source file doc
-- **`module_prefix`** : `str` — module grouping prefix
-- **`item_name`** : `str` — class/function/enum name
 
 **Returns**: `str`
 

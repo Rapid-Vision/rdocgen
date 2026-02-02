@@ -4,7 +4,7 @@ Project builder that groups parsed files into modules.
 
 ## Functions
 
-### `build_project`
+### `build_project` {#function-build-project}
 
 Build a ProjectDoc from a file path or a directory root.
 

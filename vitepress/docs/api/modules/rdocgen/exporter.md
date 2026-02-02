@@ -4,7 +4,7 @@ Filesystem exporter that writes rendered docs to disk.
 
 ## Functions
 
-### `export_project`
+### `export_project` {#function-export-project}
 
 Write a ProjectDoc to disk using the configured renderer.
 

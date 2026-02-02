@@ -29,7 +29,6 @@ class RenderOptions:
     include_dunder: bool = False  # include __dunder__ names
     sort: Literal["source-order", "alpha"] = "source-order"  # order of definitions
     flatten: bool = False  # emit a single output file
-    split: Literal["off", "only", "hybrid"] = "off"  # split output mode
     index_title: str = "Overview"  # title for root index page
     docstring_style: str = "python-fences"  # raw, python-fences, preserve
     code_fence_language: str = "python"  # language for unlabeled fences

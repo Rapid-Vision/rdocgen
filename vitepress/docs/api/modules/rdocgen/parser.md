@@ -4,7 +4,7 @@ AST parser that converts Python source into structured documentation models.
 
 ## Classes
 
-### `class Parser`
+### `class Parser` {#class-parser}
 Parse a single Python source file into documentation data classes.
 
 ::: details Methods
@@ -28,7 +28,7 @@ def parse(self) -> FileDoc
 
 ## Functions
 
-### `is_enum_class`
+### `is_enum_class` {#function-is-enum-class}
 
 Check if a class inherits from Enum (by name).
 
@@ -48,7 +48,7 @@ def is_enum_class(class_node: ast.AST) -> bool
 
 :::
 
-### `check_function_returns_self`
+### `check_function_returns_self` {#function-check-function-returns-self}
 
 ::: details Details
 
@@ -66,7 +66,7 @@ def check_function_returns_self(func: ast.FunctionDef | ast.AsyncFunctionDef) ->
 
 :::
 
-### `get_function_signature`
+### `get_function_signature` {#function-get-function-signature}
 
 ::: details Details
 
@@ -84,7 +84,7 @@ def get_function_signature(node: ast.FunctionDef | ast.AsyncFunctionDef) -> str
 
 :::
 
-### `parse_source`
+### `parse_source` {#function-parse-source}
 
 Parse a Python source string into a structured documentation tree.
 
@@ -106,7 +106,7 @@ def parse_source(source: str, *, path: str='<memory>', module_name: str='<module
 
 :::
 
-### `parse_file`
+### `parse_file` {#function-parse-file}
 
 Parse a file path into a structured documentation tree.
 

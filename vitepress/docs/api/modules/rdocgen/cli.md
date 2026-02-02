@@ -6,7 +6,7 @@ Handles argument parsing and invokes the export pipeline.
 
 ## Functions
 
-### `main`
+### `main` {#function-main}
 
 CLI entrypoint for rdocgen.
 

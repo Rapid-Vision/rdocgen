@@ -4,7 +4,7 @@ Data models representing parsed documentation structure.
 
 ## Classes
 
-### `class ArgumentDoc`
+### `class ArgumentDoc` {#class-argumentdoc}
 ::: details Attributes
 
 | Name | Type | Description |
@@ -18,7 +18,7 @@ Data models representing parsed documentation structure.
 
 ---
 
-### `class FunctionDoc`
+### `class FunctionDoc` {#class-functiondoc}
 ::: details Attributes
 
 | Name | Type | Description |
@@ -37,7 +37,7 @@ Data models representing parsed documentation structure.
 
 ---
 
-### `class AttributeDoc`
+### `class AttributeDoc` {#class-attributedoc}
 ::: details Attributes
 
 | Name | Type | Description |
@@ -51,7 +51,7 @@ Data models representing parsed documentation structure.
 
 ---
 
-### `class EnumVariantDoc`
+### `class EnumVariantDoc` {#class-enumvariantdoc}
 ::: details Attributes
 
 | Name | Type | Description |
@@ -64,7 +64,7 @@ Data models representing parsed documentation structure.
 
 ---
 
-### `class EnumDoc`
+### `class EnumDoc` {#class-enumdoc}
 ::: details Attributes
 
 | Name | Type | Description |
@@ -79,7 +79,7 @@ Data models representing parsed documentation structure.
 
 ---
 
-### `class ClassDoc`
+### `class ClassDoc` {#class-classdoc}
 ::: details Attributes
 
 | Name | Type | Description |
@@ -96,7 +96,7 @@ Data models representing parsed documentation structure.
 
 ---
 
-### `class FileDoc`
+### `class FileDoc` {#class-filedoc}
 ::: details Attributes
 
 | Name | Type | Description |
@@ -112,7 +112,7 @@ Data models representing parsed documentation structure.
 
 ---
 
-### `class ModuleDoc`
+### `class ModuleDoc` {#class-moduledoc}
 ::: details Attributes
 
 | Name | Type | Description |
@@ -125,7 +125,7 @@ Data models representing parsed documentation structure.
 
 ---
 
-### `class ProjectDoc`
+### `class ProjectDoc` {#class-projectdoc}
 ::: details Attributes
 
 | Name | Type | Description |

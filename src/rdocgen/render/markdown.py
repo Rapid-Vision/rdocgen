@@ -3,6 +3,8 @@ Markdown renderer for rdocgen outputs.
 """
 
 import os
+import posixpath
+import re
 from typing import Iterable, Sequence
 
 from ..config import RenderOptions
@@ -45,8 +47,10 @@ class MarkdownRenderer:
             content.append("_No modules found._")
         elif include_module_links:
             for module in project.modules:
-                module_path = os.path.join(
-                    "modules", *module.name.split("."), f"index{self.options.extension}"
+                module_path = self._url_path(
+                    "modules",
+                    *module.name.split("."),
+                    f"index{self.options.extension}",
                 )
                 content.append(self._link(module.name, module_path))
         else:
@@ -58,65 +62,8 @@ class MarkdownRenderer:
         self,
         module: ModuleDoc,  # module to render
     ) -> str:
-        """Render a module index page, optionally listing split outputs."""
+        """Render a module index page with file links and item anchors."""
         content = [f"# Module: `{module.name}`", ""]
-
-        if self.options.split != "off":
-            content.append("## Classes")
-            content.append("")
-            class_items = []
-            for file_doc in module.files:
-                for cls in self._filter_items(file_doc.classes, "class"):
-                    rel = self.item_output_relpath(file_doc, module.name, cls.name)
-                    class_items.append(
-                        self._link(
-                            cls.name,
-                            os.path.join("classes", f"{rel}{self.options.extension}"),
-                        )
-                    )
-            if class_items:
-                content.extend(class_items)
-            else:
-                content.append("_No classes found._")
-            content.append("")
-
-            content.append("## Functions")
-            content.append("")
-            function_items = []
-            for file_doc in module.files:
-                for func in self._filter_items(file_doc.functions, "function"):
-                    rel = self.item_output_relpath(file_doc, module.name, func.name)
-                    function_items.append(
-                        self._link(
-                            func.name,
-                            os.path.join("functions", f"{rel}{self.options.extension}"),
-                        )
-                    )
-            if function_items:
-                content.extend(function_items)
-            else:
-                content.append("_No functions found._")
-            content.append("")
-
-            content.append("## Enums")
-            content.append("")
-            enum_items = []
-            for file_doc in module.files:
-                for enm in self._filter_items(file_doc.enums, "enum"):
-                    rel = self.item_output_relpath(file_doc, module.name, enm.name)
-                    enum_items.append(
-                        self._link(
-                            enm.name,
-                            os.path.join("enums", f"{rel}{self.options.extension}"),
-                        )
-                    )
-            if enum_items:
-                content.extend(enum_items)
-            else:
-                content.append("_No enums found._")
-            content.append("")
-            if self.options.split == "only":
-                return "\n".join(content)
 
         content.append("## Files")
         content.append("")
@@ -125,7 +72,7 @@ class MarkdownRenderer:
         else:
             for file_doc in module.files:
                 relpath = self.file_output_relpath(file_doc, module.name)
-                target = f"{relpath}{self.options.extension}"
+                target = self._url_path(f"{relpath}{self.options.extension}")
                 label = f"`{os.path.basename(file_doc.path)}`"
                 content.append(
                     self._link(
@@ -134,6 +81,53 @@ class MarkdownRenderer:
                     )
                 )
         content.append("")
+
+        class_links: list[str] = []
+        function_links: list[str] = []
+        enum_links: list[str] = []
+        for file_doc in module.files:
+            relpath = self.file_output_relpath(file_doc, module.name)
+            file_target = self._url_path(f"{relpath}{self.options.extension}")
+            for cls in self._filter_items(file_doc.classes, "class"):
+                anchor = self._item_anchor("class", cls.name)
+                class_links.append(
+                    self._link(f"`class {cls.name}`", f"{file_target}#{anchor}")
+                )
+            for func in self._filter_items(file_doc.functions, "function"):
+                anchor = self._item_anchor("function", func.name)
+                function_links.append(
+                    self._link(f"`{func.name}`", f"{file_target}#{anchor}")
+                )
+            for enm in self._filter_items(file_doc.enums, "enum"):
+                anchor = self._item_anchor("enum", enm.name)
+                enum_links.append(
+                    self._link(f"`{enm.name}`", f"{file_target}#{anchor}")
+                )
+
+        content.append("## Classes")
+        content.append("")
+        if class_links:
+            content.extend(class_links)
+        else:
+            content.append("_No classes found._")
+        content.append("")
+
+        content.append("## Functions")
+        content.append("")
+        if function_links:
+            content.extend(function_links)
+        else:
+            content.append("_No functions found._")
+        content.append("")
+
+        content.append("## Enums")
+        content.append("")
+        if enum_links:
+            content.extend(enum_links)
+        else:
+            content.append("_No enums found._")
+        content.append("")
+
         return "\n".join(content)
 
     def file_doc(
@@ -282,33 +276,28 @@ class MarkdownRenderer:
             parts.append(stem)
         return os.path.join(*parts)
 
-    def item_output_relpath(
-        self,
-        file_doc: FileDoc,  # source file doc
-        module_prefix: str,  # module grouping prefix
-        item_name: str,  # class/function/enum name
-    ) -> str:
-        """Compute the relative output path for a class/function/enum item."""
-        rel = self.file_output_relpath(file_doc, module_prefix)
-        base_dir = os.path.dirname(rel)
-        file_stem = os.path.splitext(os.path.basename(file_doc.path))[0]
-        if base_dir:
-            return os.path.join(base_dir, file_stem, item_name)
-        return os.path.join(file_stem, item_name)
-
     def _section_for_classes(
         self,
         classes: Iterable[ClassDoc],  # classes to render
         *,
         section_level: int,  # heading level for the section
+        include_section_heading: bool = True,  # include the "Classes" heading
     ) -> list[str]:
         classes = list(classes)
         if not classes:
             return []
 
-        content = [f"{'#' * section_level} Classes", ""]
+        content: list[str] = []
+        if include_section_heading:
+            content.extend([f"{'#' * section_level} Classes", ""])
+            item_heading_level = section_level + 1
+        else:
+            item_heading_level = section_level
         for cls in classes:
-            content.append(f"{'#' * (section_level + 1)} `class {cls.name}`")
+            anchor = self._item_anchor("class", cls.name)
+            content.append(
+                f"{'#' * item_heading_level} `class {cls.name}` {{#{anchor}}}"
+            )
             if cls.bases:
                 content.append(
                     f"Inherits from: {', '.join(f'`{b}`' for b in cls.bases)}"
@@ -342,7 +331,7 @@ class MarkdownRenderer:
                     content.extend(
                         self._function_markdown(
                             method,
-                            heading_level=section_level + 3,
+                            heading_level=item_heading_level + 2,
                             code_heading=True,
                             include_separator=False,
                         )
@@ -359,14 +348,21 @@ class MarkdownRenderer:
         enums: Iterable[EnumDoc],  # enums to render
         *,
         section_level: int,  # heading level for the section
+        include_section_heading: bool = True,  # include the "Enums" heading
     ) -> list[str]:
         enums = list(enums)
         if not enums:
             return []
 
-        content = [f"{'#' * section_level} Enums", ""]
+        content: list[str] = []
+        if include_section_heading:
+            content.extend([f"{'#' * section_level} Enums", ""])
+            item_heading_level = section_level + 1
+        else:
+            item_heading_level = section_level
         for enm in enums:
-            content.append(f"{'#' * (section_level + 1)} {enm.name}")
+            anchor = self._item_anchor("enum", enm.name)
+            content.append(f"{'#' * item_heading_level} {enm.name} {{#{anchor}}}")
             docstring = self._rewrite_docstring(enm.docstring)
             if docstring:
                 content.append(docstring)
@@ -392,14 +388,25 @@ class MarkdownRenderer:
         functions: Iterable[FunctionDoc],  # functions to render
         *,
         section_level: int,  # heading level for the section
+        include_section_heading: bool = True,  # include the "Functions" heading
     ) -> list[str]:
         functions = list(functions)
         if not functions:
             return []
 
-        content = [f"{'#' * section_level} Functions", ""]
+        content: list[str] = []
+        if include_section_heading:
+            content.extend([f"{'#' * section_level} Functions", ""])
+            item_heading_level = section_level + 1
+        else:
+            item_heading_level = section_level
         for func in functions:
-            content.extend(self._function_block(func, heading_level=section_level + 1))
+            anchor = self._item_anchor("function", func.name)
+            content.extend(
+                self._function_block(
+                    func, heading_level=item_heading_level, anchor=anchor
+                )
+            )
         return content
 
     def _function_block(
@@ -407,9 +414,11 @@ class MarkdownRenderer:
         func: FunctionDoc,  # function to render
         *,
         heading_level: int,  # heading level for the title
+        anchor: str | None = None,  # custom anchor for the heading
     ) -> list[str]:
         heading = "#" * heading_level
-        content = [f"{heading} `{func.name}`", ""]
+        anchor_suffix = f" {{#{anchor}}}" if anchor else ""
+        content = [f"{heading} `{func.name}`{anchor_suffix}", ""]
 
         summary = (
             func.docstring.strip().splitlines()[0] if func.docstring.strip() else ""
@@ -595,3 +604,13 @@ class MarkdownRenderer:
         if not self.options.code_fence_suffix.strip():
             return ""
         return f" {self.options.code_fence_suffix.strip()}"
+
+    def _item_anchor(self, kind: str, name: str) -> str:  # anchor slug for headings
+        slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+        if not slug:
+            slug = "item"
+        return f"{kind}-{slug}"
+
+    def _url_path(self, *parts: str) -> str:  # build a URL path with optional prefix
+        clean_parts = [p.replace(os.sep, "/") for p in parts if p]
+        return posixpath.join(*clean_parts)

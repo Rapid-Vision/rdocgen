@@ -100,17 +100,6 @@ def main():
         help="Emit a single output file with all content.",
     )
     parser.add_argument(
-        "--split",
-        nargs="?",
-        const="only",
-        default="off",
-        choices=["off", "only", "hybrid"],
-        help=(
-            "Split output into separate files for classes, functions, and enums. "
-            "Use --split=hybrid to also emit per-file pages."
-        ),
-    )
-    parser.add_argument(
         "--index-title",
         default="Overview",
         help="Title for the root index page.",
@@ -143,9 +132,6 @@ def main():
     )
     args = parser.parse_args()
 
-    if args.split != "off" and args.flatten:
-        raise SystemExit("--split cannot be used with --flatten")
-
     include_types = [t.strip() for t in args.include_types.split(",") if t.strip()]
     exclude_types = [t.strip() for t in args.exclude_types.split(",") if t.strip()]
 
@@ -174,7 +160,6 @@ def main():
         include_dunder=args.include_dunder,
         sort=args.sort,
         flatten=args.flatten,
-        split=args.split,
         index_title=args.index_title,
         docstring_style=args.docstring_style,
         code_fence_language=args.code_fence_language,

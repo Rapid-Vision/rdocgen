@@ -4,7 +4,7 @@ Filesystem discovery utilities for locating Python sources.
 
 ## Functions
 
-### `iter_python_files`
+### `iter_python_files` {#function-iter-python-files}
 
 Yield Python files under root, applying include/exclude rules.
 
@@ -25,7 +25,7 @@ def iter_python_files(root: Path, options: ParseOptions) -> Iterable[Path]
 
 :::
 
-### `module_name_from_path`
+### `module_name_from_path` {#function-module-name-from-path}
 
 Convert a file path into a dotted module path, with optional depth.
 
@@ -47,7 +47,7 @@ def module_name_from_path(path: Path, root: Optional[Path]=None, depth: Optional
 
 :::
 
-### `path_allowed`
+### `path_allowed` {#function-path-allowed}
 
 Return True if a path matches include/exclude filters.
 
