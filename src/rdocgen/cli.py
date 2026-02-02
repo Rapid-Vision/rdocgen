@@ -67,7 +67,17 @@ def main():
         action="store_false",
         help="Do not delete output directory before export.",
     )
-    parser.set_defaults(clean=True)
+    parser.set_defaults(clean=False)
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Allow deleting protected directories like .git.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print planned actions without writing files.",
+    )
     parser.add_argument(
         "--include-private",
         action="store_true",
@@ -169,6 +179,8 @@ def main():
         render=render_options,
         parse=parse_options,
         clean=args.clean,
+        force=args.force,
+        dry_run=args.dry_run,
     )
 
     export_docs(

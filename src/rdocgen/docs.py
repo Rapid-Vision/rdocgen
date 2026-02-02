@@ -22,12 +22,17 @@ def export_docs(
             file_doc = project.modules[0].files[0]
         if file_doc is None:
             if Path(outdir).exists() and options.clean:
-                from shutil import rmtree
+                from .exporter import _safe_clean
 
-                rmtree(outdir)
-            Path(outdir).mkdir(parents=True, exist_ok=True)
-            out_path = Path(outdir) / f"index{options.render.extension}"
-            out_path.write_text("_No content found._\n", encoding="utf-8")
+                _safe_clean(outdir, force=options.force, dry_run=options.dry_run)
+            if options.dry_run:
+                print(f"[dry-run] create directory: {outdir}")
+                out_path = Path(outdir) / f"index{options.render.extension}"
+                print(f"[dry-run] write file: {out_path}")
+            else:
+                Path(outdir).mkdir(parents=True, exist_ok=True)
+                out_path = Path(outdir) / f"index{options.render.extension}"
+                out_path.write_text("_No content found._\n", encoding="utf-8")
         else:
             export_single_file(file_doc=file_doc, outdir=outdir, options=options)
         return

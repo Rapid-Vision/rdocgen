@@ -70,7 +70,9 @@ rdocgen -c src -o ./out_docs \
 - `--include-path` / `--exclude-path`: Glob filters (repeatable).
 - `--module-depth`: Grouping depth (`1`, `2`, or `all`).
 - `--project-name`: Override the project name shown in indexes.
-- `--clean` / `--no-clean`: Control output dir deletion.
+- `--clean` / `--no-clean`: Control output dir deletion (default is no deletion).
+- `--force`: Allow deleting protected directories like `.git`.
+- `--dry-run`: Print planned actions without writing files.
 - `--include-private` / `--include-dunder`: Include hidden members.
 - `--include-types` / `--exclude-types`: Filter by `class,function,enum,attribute`.
 - `--sort`: `source-order` or `alpha`.

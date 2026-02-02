@@ -49,4 +49,6 @@ class ExportOptions:
 
     render: RenderOptions = field(default_factory=RenderOptions)  # render settings
     parse: ParseOptions = field(default_factory=ParseOptions)  # parse settings
-    clean: bool = True  # delete output directory before export
+    clean: bool = False  # delete output directory before export
+    force: bool = False  # allow deleting protected directories
+    dry_run: bool = False  # report actions without writing files
