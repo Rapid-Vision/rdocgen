@@ -8,15 +8,7 @@ import re
 from typing import Iterable, Sequence
 
 from ..config import RenderOptions
-from ..model import (
-    AttributeDoc,
-    ClassDoc,
-    EnumDoc,
-    FileDoc,
-    FunctionDoc,
-    ModuleDoc,
-    ProjectDoc,
-)
+from ..model import ClassDoc, EnumDoc, FileDoc, FunctionDoc, ModuleDoc, ProjectDoc
 
 
 class MarkdownRenderer:
@@ -167,91 +159,6 @@ class MarkdownRenderer:
         relpath: str,  # relative path to the target file
     ) -> str:
         return f"- [{label}]({relpath})"
-
-    def class_doc(
-        self,
-        cls: ClassDoc,  # class to render
-    ) -> str:
-        """Render a standalone class page."""
-        content: list[str] = [f"# `class {cls.name}`", ""]
-        if cls.bases:
-            content.append(f"Inherits from: {', '.join(f'`{b}`' for b in cls.bases)}")
-            content.append("")
-
-        docstring = self._rewrite_docstring(cls.docstring)
-        if docstring:
-            content.append(docstring)
-            content.append("")
-
-        methods = self._filter_items(cls.methods, "function")
-        attributes = self._filter_items(cls.attributes, "attribute")
-
-        if attributes:
-            content.append("::: details Attributes")
-            content.append("")
-            content.append("| Name | Type | Description |")
-            content.append("| - | - | - |")
-            for attr in attributes:
-                desc = attr.comment or ""
-                content.append(f"| `{attr.name}` | `{attr.annotation}` | {desc} |")
-            content.append("")
-            content.append(":::")
-            content.append("")
-
-        if methods:
-            content.append("::: details Methods")
-            content.append("")
-            for method in methods:
-                content.extend(
-                    self._function_markdown(
-                        method,
-                        heading_level=5,
-                        code_heading=True,
-                        include_separator=False,
-                    )
-                )
-            content.append(":::")
-            content.append("")
-
-        return "\n".join(content).rstrip() + "\n"
-
-    def function_doc(
-        self,
-        func: FunctionDoc,  # function to render
-    ) -> str:
-        """Render a standalone function page."""
-        return "\n".join(self._function_block(func, heading_level=1)).rstrip() + "\n"
-
-    def enum_doc(
-        self,
-        enm: EnumDoc,  # enum to render
-    ) -> str:
-        """Render a standalone enum page."""
-        content = [f"# {enm.name}", ""]
-        docstring = self._rewrite_docstring(enm.docstring)
-        if docstring:
-            content.append(docstring)
-            content.append("")
-
-        if enm.variants:
-            content.append("::: details Variants")
-            content.append("")
-            content.append("| Name | Description |")
-            content.append("| - | - |")
-            for variant in enm.variants:
-                desc = variant.comment or ""
-                content.append(f"| `{variant.name}` | {desc} |")
-            content.append("")
-            content.append(":::")
-        return "\n".join(content).rstrip() + "\n"
-
-    def filter_items(
-        self,
-        items: Sequence,  # list of items to filter
-        item_type: str,  # item type label (class/function/enum/attribute)
-    ) -> list:
-        """Public wrapper around item filtering used by exporters."""
-        return self._filter_items(items, item_type)
 
     def file_output_relpath(
         self,
