@@ -10,5 +10,6 @@
 - [`model.py`](model.md)
 - [`parser.py`](parser.md)
 - [`cli.py`](cli.md)
+- [`example.py`](example.md)
 - [`project.py`](project.md)
 - [`markdown.py`](render/markdown.md)

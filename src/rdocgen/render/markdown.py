@@ -325,9 +325,7 @@ class MarkdownRenderer:
                 content.append("| - | - | - |")
                 for attr in attributes:
                     desc = attr.comment or ""
-                    content.append(
-                        f"| `{attr.name}` | `{attr.annotation}` | {desc} |"
-                    )
+                    content.append(f"| `{attr.name}` | `{attr.annotation}` | {desc} |")
                 content.append("")
                 content.append(":::")
                 content.append("")
@@ -405,12 +403,14 @@ class MarkdownRenderer:
         heading = "#" * heading_level
         content = [f"{heading} `{func.name}`", ""]
 
-        summary = func.docstring.strip().splitlines()[0] if func.docstring.strip() else ""
+        summary = (
+            func.docstring.strip().splitlines()[0] if func.docstring.strip() else ""
+        )
         if summary:
             content.append(summary)
             content.append("")
 
-        content.append("::: details Description")
+        content.append("::: details Details")
         content.append("")
         content.append("**Signature**")
         content.append("")
@@ -522,9 +522,7 @@ class MarkdownRenderer:
             filtered.sort(key=lambda obj: getattr(obj, "name", "").lower())
         return filtered
 
-    def _name_allowed(
-        self, name: str  # item name to check visibility rules
-    ) -> bool:
+    def _name_allowed(self, name: str) -> bool:  # item name to check visibility rules
         if name.startswith("__") and name.endswith("__"):
             return self.options.include_dunder
         if name.startswith("_"):
@@ -540,24 +538,18 @@ class MarkdownRenderer:
             return f"**Returns**: {self._inline_type(func.returns)}"
         return None
 
-    def _inline_type(
-        self, annotation: str  # type annotation to format
-    ) -> str:
+    def _inline_type(self, annotation: str) -> str:  # type annotation to format
         if self.options.output_format == "md-nextra":
             return f"`{annotation}{{:python}}`"
         return f"`{annotation}`"
 
-    def _code_block(
-        self, code: str  # code to wrap in a fenced block
-    ) -> str:
+    def _code_block(self, code: str) -> str:  # code to wrap in a fenced block
         if self.options.output_format == "md-nextra":
             suffix = " showLineNumbers" if self.options.show_line_numbers else ""
             return f"```python copy{suffix}\n{code}\n```"
         return f"```python\n{code}\n```"
 
-    def _rewrite_docstring(
-        self, docstring: str  # docstring text to rewrite
-    ) -> str:
+    def _rewrite_docstring(self, docstring: str) -> str:  # docstring text to rewrite
         if not docstring:
             return ""
         if self.options.output_format == "md-plain":

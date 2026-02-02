@@ -6,7 +6,7 @@
 
 Build a ProjectDoc from a file path or a directory root.
 
-::: details Description
+::: details Details
 
 **Signature**
 

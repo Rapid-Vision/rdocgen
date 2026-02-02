@@ -6,7 +6,7 @@
 
 Yield Python files under root, applying include/exclude rules.
 
-::: details Description
+::: details Details
 
 **Signature**
 
@@ -27,7 +27,7 @@ def iter_python_files(root: Path, options: ParseOptions) -> Iterable[Path]
 
 Convert a file path into a dotted module path, with optional depth.
 
-::: details Description
+::: details Details
 
 **Signature**
 
@@ -49,7 +49,7 @@ def module_name_from_path(path: Path, root: Optional[Path]=None, depth: Optional
 
 Return True if a path matches include/exclude filters.
 
-::: details Description
+::: details Details
 
 **Signature**
 

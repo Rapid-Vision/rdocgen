@@ -6,7 +6,7 @@
 
 High-level entrypoint: parse sources and export documentation.
 
-::: details Description
+::: details Details
 
 **Signature**
 

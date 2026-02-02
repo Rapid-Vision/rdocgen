@@ -10,6 +10,9 @@ hero:
       text: Get started
       link: /getting-started
     - theme: alt
+      text: Overview result
+      link: /api/modules/rdocgen/example
+    - theme: alt
       text: Documentation example
       link: /api
 

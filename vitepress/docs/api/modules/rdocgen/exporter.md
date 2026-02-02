@@ -6,7 +6,7 @@
 
 Write a ProjectDoc to disk using the configured renderer.
 
-::: details Description
+::: details Details
 
 **Signature**
 

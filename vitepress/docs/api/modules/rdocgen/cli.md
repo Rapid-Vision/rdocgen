@@ -10,7 +10,7 @@ The output is structured for use with the [Nextra site generator](https://nextra
 
 CLI entrypoint for rdocgen.
 
-::: details Description
+::: details Details
 
 **Signature**
 
