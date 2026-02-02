@@ -1,35 +1,35 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Literal, Optional
 
 
 @dataclass
 class ParseOptions:
     """Configuration for filesystem traversal and parsing behavior."""
-    include_paths: list[str] = field(default_factory=list)
-    exclude_paths: list[str] = field(default_factory=list)
-    follow_symlinks: bool = False
-    module_depth: Optional[int] = 1
-    fail_on_parse_error: bool = False
+    include_paths: list[str] = field(default_factory=list)  # glob patterns to include
+    exclude_paths: list[str] = field(default_factory=list)  # glob patterns to exclude
+    follow_symlinks: bool = False  # follow directory symlinks in traversal
+    module_depth: Optional[int] = 1  # grouping depth for module buckets
+    fail_on_parse_error: bool = False  # raise on SyntaxError
 
 
 @dataclass
 class RenderOptions:
     """Configuration for how parsed docs are rendered into markdown."""
-    output_format: str = "md-nextra"
-    output_extension: str | None = None
-    include_types: list[str] = field(default_factory=list)
-    exclude_types: list[str] = field(default_factory=list)
-    include_private: bool = False
-    include_dunder: bool = False
-    sort: str = "source-order"  # source-order, alpha
-    flatten: bool = False
-    split: str = "off"  # off, only, hybrid
-    index_title: str = "Overview"
+    output_format: Literal["md-nextra", "md-plain"] = "md-nextra"  # output format
+    output_extension: str | None = None  # override for .md/.mdx
+    include_types: list[str] = field(default_factory=list)  # sections to include
+    exclude_types: list[str] = field(default_factory=list)  # sections to exclude
+    include_private: bool = False  # include underscore-prefixed items
+    include_dunder: bool = False  # include __dunder__ names
+    sort: Literal["source-order", "alpha"] = "source-order"  # order of definitions
+    flatten: bool = False  # emit a single output file
+    split: Literal["off", "only", "hybrid"] = "off"  # split output mode
+    index_title: str = "Overview"  # title for root index page
     docstring_style: str = "python-fences"  # raw, python-fences, preserve
-    code_fence_language: str = "python"
-    show_line_numbers: bool = True
+    code_fence_language: str = "python"  # language for unlabeled fences
+    show_line_numbers: bool = True  # add showLineNumbers in fences
 
     @property
     def extension(
@@ -43,6 +43,6 @@ class RenderOptions:
 @dataclass
 class ExportOptions:
     """Top-level export configuration (parse + render + output behavior)."""
-    render: RenderOptions = field(default_factory=RenderOptions)
-    parse: ParseOptions = field(default_factory=ParseOptions)
-    clean: bool = True
+    render: RenderOptions = field(default_factory=RenderOptions)  # render settings
+    parse: ParseOptions = field(default_factory=ParseOptions)  # parse settings
+    clean: bool = True  # delete output directory before export

@@ -1,0 +1,23 @@
+# File: `exporter.py`
+
+## Functions
+
+### export_project
+
+Write a ProjectDoc to disk using the configured renderer.
+
+**Signature**
+
+```python
+def export_project(project: ProjectDoc, outdir: str, options: ExportOptions) -> None
+```
+
+**Arguments**
+
+- **`project`** : `ProjectDoc` — parsed project tree to export
+- **`outdir`** : `str` — output directory
+- **`options`** : `ExportOptions` — render/export configuration
+
+**Returns**: `None`
+
+---
