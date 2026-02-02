@@ -62,12 +62,14 @@ def rename(self, new_name: str) -> 'ExampleClass'
 ### ExampleEnum
 This is an example enum used for variant rendering.
 
-#### Variants
+::: details Variants
 
-- `FIRST`
-  - first option
-- `SECOND`
-  - second option
+| Name | Description |
+| - | - |
+| `FIRST` | first option |
+| `SECOND` | second option |
+
+:::
 
 ---
 

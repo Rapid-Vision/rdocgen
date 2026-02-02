@@ -238,12 +238,15 @@ class MarkdownRenderer:
             content.append("")
 
         if enm.variants:
-            content.append("## Variants")
+            content.append("::: details Variants")
             content.append("")
+            content.append("| Name | Description |")
+            content.append("| - | - |")
             for variant in enm.variants:
-                content.append(f"- `{variant.name}`")
-                if variant.comment:
-                    content.append(f"  - {variant.comment}")
+                desc = variant.comment or ""
+                content.append(f"| `{variant.name}` | {desc} |")
+            content.append("")
+            content.append(":::")
         return "\n".join(content).rstrip() + "\n"
 
     def filter_items(
@@ -368,12 +371,15 @@ class MarkdownRenderer:
                 content.append("")
 
             if enm.variants:
-                content.append(f"{'#' * (section_level + 2)} Variants")
+                content.append("::: details Variants")
                 content.append("")
+                content.append("| Name | Description |")
+                content.append("| - | - |")
                 for variant in enm.variants:
-                    content.append(f"- `{variant.name}`")
-                    if variant.comment:
-                        content.append(f"  - {variant.comment}")
+                    desc = variant.comment or ""
+                    content.append(f"| `{variant.name}` | {desc} |")
+                content.append("")
+                content.append(":::")
             content.append("")
             content.append("---")
             content.append("")
