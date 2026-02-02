@@ -2,311 +2,136 @@
 
 ## Classes
 
-### ArgumentDoc
-#### Attributes
+### `class ArgumentDoc`
+::: details Attributes
 
-##### `name`
+| Name | Type | Description |
+| - | - | - |
+| `name` | `str` | argument name (with * or ** prefix if applicable) |
+| `annotation` | `Optional[str]` | annotation string if present |
+| `comment` | `str` | inline comment text attached to the argument |
+| `lineno` | `int` | source line number |
 
-Type: `str`
-
-argument name (with * or ** prefix if applicable)
-
-##### `annotation`
-
-Type: `Optional[str]`
-
-annotation string if present
-
-##### `comment`
-
-Type: `str`
-
-inline comment text attached to the argument
-
-##### `lineno`
-
-Type: `int`
-
-source line number
+:::
 
 ---
 
-### FunctionDoc
-#### Attributes
+### `class FunctionDoc`
+::: details Attributes
 
-##### `name`
+| Name | Type | Description |
+| - | - | - |
+| `name` | `str` | function name |
+| `docstring` | `str` | cleaned docstring text |
+| `arguments` | `List[ArgumentDoc]` | parsed argument docs |
+| `returns` | `Optional[str]` | return annotation string if present |
+| `returns_self` | `bool` | True if all returns are a bare name (Self-like) |
+| `decorators` | `List[str]` | decorator expressions as strings |
+| `signature` | `str` | signature string for rendering |
+| `lineno` | `int` | source line number |
+| `is_private` | `bool` | True for underscore-prefixed names |
 
-Type: `str`
-
-function name
-
-##### `docstring`
-
-Type: `str`
-
-cleaned docstring text
-
-##### `arguments`
-
-Type: `List[ArgumentDoc]`
-
-parsed argument docs
-
-##### `returns`
-
-Type: `Optional[str]`
-
-return annotation string if present
-
-##### `returns_self`
-
-Type: `bool`
-
-True if all returns are a bare name (Self-like)
-
-##### `decorators`
-
-Type: `List[str]`
-
-decorator expressions as strings
-
-##### `signature`
-
-Type: `str`
-
-signature string for rendering
-
-##### `lineno`
-
-Type: `int`
-
-source line number
-
-##### `is_private`
-
-Type: `bool`
-
-True for underscore-prefixed names
+:::
 
 ---
 
-### AttributeDoc
-#### Attributes
+### `class AttributeDoc`
+::: details Attributes
 
-##### `name`
+| Name | Type | Description |
+| - | - | - |
+| `name` | `str` | attribute name |
+| `annotation` | `str` | annotation string |
+| `comment` | `str` | inline comment text attached to the attribute |
+| `lineno` | `int` | source line number |
 
-Type: `str`
-
-attribute name
-
-##### `annotation`
-
-Type: `str`
-
-annotation string
-
-##### `comment`
-
-Type: `str`
-
-inline comment text attached to the attribute
-
-##### `lineno`
-
-Type: `int`
-
-source line number
+:::
 
 ---
 
-### EnumVariantDoc
-#### Attributes
+### `class EnumVariantDoc`
+::: details Attributes
 
-##### `name`
+| Name | Type | Description |
+| - | - | - |
+| `name` | `str` | enum variant name |
+| `comment` | `str` | inline comment text attached to the variant |
+| `lineno` | `int` | source line number |
 
-Type: `str`
-
-enum variant name
-
-##### `comment`
-
-Type: `str`
-
-inline comment text attached to the variant
-
-##### `lineno`
-
-Type: `int`
-
-source line number
+:::
 
 ---
 
-### EnumDoc
-#### Attributes
+### `class EnumDoc`
+::: details Attributes
 
-##### `name`
+| Name | Type | Description |
+| - | - | - |
+| `name` | `str` | enum class name |
+| `docstring` | `str` | cleaned docstring text |
+| `variants` | `List[EnumVariantDoc]` | parsed enum variants |
+| `lineno` | `int` | source line number |
+| `is_private` | `bool` | True for underscore-prefixed names |
 
-Type: `str`
-
-enum class name
-
-##### `docstring`
-
-Type: `str`
-
-cleaned docstring text
-
-##### `variants`
-
-Type: `List[EnumVariantDoc]`
-
-parsed enum variants
-
-##### `lineno`
-
-Type: `int`
-
-source line number
-
-##### `is_private`
-
-Type: `bool`
-
-True for underscore-prefixed names
+:::
 
 ---
 
-### ClassDoc
-#### Attributes
+### `class ClassDoc`
+::: details Attributes
 
-##### `name`
+| Name | Type | Description |
+| - | - | - |
+| `name` | `str` | class name |
+| `bases` | `List[str]` | base class expressions as strings |
+| `docstring` | `str` | cleaned docstring text |
+| `methods` | `List[FunctionDoc]` | parsed methods |
+| `attributes` | `List[AttributeDoc]` | parsed annotated attributes |
+| `lineno` | `int` | source line number |
+| `is_private` | `bool` | True for underscore-prefixed names |
 
-Type: `str`
-
-class name
-
-##### `bases`
-
-Type: `List[str]`
-
-base class expressions as strings
-
-##### `docstring`
-
-Type: `str`
-
-cleaned docstring text
-
-##### `methods`
-
-Type: `List[FunctionDoc]`
-
-parsed methods
-
-##### `attributes`
-
-Type: `List[AttributeDoc]`
-
-parsed annotated attributes
-
-##### `lineno`
-
-Type: `int`
-
-source line number
-
-##### `is_private`
-
-Type: `bool`
-
-True for underscore-prefixed names
+:::
 
 ---
 
-### FileDoc
-#### Attributes
+### `class FileDoc`
+::: details Attributes
 
-##### `path`
+| Name | Type | Description |
+| - | - | - |
+| `path` | `str` | filesystem path to the source file |
+| `module_name` | `str` | dotted module path for this file |
+| `docstring` | `str` | module docstring text |
+| `classes` | `List[ClassDoc]` | classes in file |
+| `enums` | `List[EnumDoc]` | enums in file |
+| `functions` | `List[FunctionDoc]` | functions in file |
 
-Type: `str`
-
-filesystem path to the source file
-
-##### `module_name`
-
-Type: `str`
-
-dotted module path for this file
-
-##### `docstring`
-
-Type: `str`
-
-module docstring text
-
-##### `classes`
-
-Type: `List[ClassDoc]`
-
-classes in file
-
-##### `enums`
-
-Type: `List[EnumDoc]`
-
-enums in file
-
-##### `functions`
-
-Type: `List[FunctionDoc]`
-
-functions in file
+:::
 
 ---
 
-### ModuleDoc
-#### Attributes
+### `class ModuleDoc`
+::: details Attributes
 
-##### `name`
+| Name | Type | Description |
+| - | - | - |
+| `name` | `str` | module grouping name |
+| `path` | `str` | path used for grouping (informational) |
+| `files` | `List[FileDoc]` | files in this module |
 
-Type: `str`
-
-module grouping name
-
-##### `path`
-
-Type: `str`
-
-path used for grouping (informational)
-
-##### `files`
-
-Type: `List[FileDoc]`
-
-files in this module
+:::
 
 ---
 
-### ProjectDoc
-#### Attributes
+### `class ProjectDoc`
+::: details Attributes
 
-##### `name`
+| Name | Type | Description |
+| - | - | - |
+| `name` | `str` | project name |
+| `root_path` | `str` | root path used for discovery |
+| `modules` | `List[ModuleDoc]` | modules in project |
 
-Type: `str`
-
-project name
-
-##### `root_path`
-
-Type: `str`
-
-root path used for discovery
-
-##### `modules`
-
-Type: `List[ModuleDoc]`
-
-modules in project
+:::
 
 ---

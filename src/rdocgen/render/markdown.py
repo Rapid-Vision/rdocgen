@@ -177,7 +177,7 @@ class MarkdownRenderer:
         cls: ClassDoc,  # class to render
     ) -> str:
         """Render a standalone class page."""
-        content: list[str] = [f"# {cls.name}", ""]
+        content: list[str] = [f"# `class {cls.name}`", ""]
         if cls.bases:
             content.append(f"Inherits from: {', '.join(f'`{b}`' for b in cls.bases)}")
             content.append("")
@@ -190,17 +190,32 @@ class MarkdownRenderer:
         methods = self._filter_items(cls.methods, "function")
         attributes = self._filter_items(cls.attributes, "attribute")
 
+        if attributes:
+            content.append("::: details Attributes")
+            content.append("")
+            content.append("| Name | Type | Description |")
+            content.append("| - | - | - |")
+            for attr in attributes:
+                desc = attr.comment or ""
+                content.append(f"| `{attr.name}` | `{attr.annotation}` | {desc} |")
+            content.append("")
+            content.append(":::")
+            content.append("")
+
         if methods:
-            content.append("## Methods")
+            content.append("::: details Methods")
             content.append("")
             for method in methods:
-                content.extend(self._function_markdown(method, heading_level=3))
-
-        if attributes:
-            content.append("## Attributes")
+                content.extend(
+                    self._function_markdown(
+                        method,
+                        heading_level=5,
+                        code_heading=True,
+                        include_separator=False,
+                    )
+                )
+            content.append(":::")
             content.append("")
-            for attr in attributes:
-                content.extend(self._attribute_markdown(attr, heading_level=3))
 
         return "\n".join(content).rstrip() + "\n"
 
@@ -288,7 +303,7 @@ class MarkdownRenderer:
 
         content = [f"{'#' * section_level} Classes", ""]
         for cls in classes:
-            content.append(f"{'#' * (section_level + 1)} {cls.name}")
+            content.append(f"{'#' * (section_level + 1)} `class {cls.name}`")
             if cls.bases:
                 content.append(
                     f"Inherits from: {', '.join(f'`{b}`' for b in cls.bases)}"
@@ -303,21 +318,34 @@ class MarkdownRenderer:
             methods = self._filter_items(cls.methods, "function")
             attributes = self._filter_items(cls.attributes, "attribute")
 
+            if attributes:
+                content.append("::: details Attributes")
+                content.append("")
+                content.append("| Name | Type | Description |")
+                content.append("| - | - | - |")
+                for attr in attributes:
+                    desc = attr.comment or ""
+                    content.append(
+                        f"| `{attr.name}` | `{attr.annotation}` | {desc} |"
+                    )
+                content.append("")
+                content.append(":::")
+                content.append("")
+
             if methods:
-                content.append(f"{'#' * (section_level + 2)} Methods")
+                content.append("::: details Methods")
                 content.append("")
                 for method in methods:
                     content.extend(
-                        self._function_markdown(method, heading_level=section_level + 3)
+                        self._function_markdown(
+                            method,
+                            heading_level=section_level + 3,
+                            code_heading=True,
+                            include_separator=False,
+                        )
                     )
-
-            if attributes:
-                content.append(f"{'#' * (section_level + 2)} Attributes")
+                content.append(":::")
                 content.append("")
-                for attr in attributes:
-                    content.extend(
-                        self._attribute_markdown(attr, heading_level=section_level + 3)
-                    )
 
             content.append("---")
             content.append("")
@@ -375,9 +403,12 @@ class MarkdownRenderer:
         func: FunctionDoc,  # function to render
         *,
         heading_level: int,  # heading level for the title
+        code_heading: bool = False,  # wrap heading in backticks
+        include_separator: bool = True,  # append section separator
     ) -> list[str]:
         heading = "#" * heading_level
-        content = [f"{heading} {func.name}", ""]
+        title = f"`{func.name}`" if code_heading else func.name
+        content = [f"{heading} {title}", ""]
 
         docstring = self._rewrite_docstring(func.docstring)
         if docstring:
@@ -407,8 +438,9 @@ class MarkdownRenderer:
             content.append(returns_line)
             content.append("")
 
-        content.append("---")
-        content.append("")
+        if include_separator:
+            content.append("---")
+            content.append("")
         return content
 
     def _attribute_markdown(

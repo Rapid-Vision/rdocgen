@@ -2,49 +2,49 @@
 
 ## Classes
 
-### ParseOptions
+### `class ParseOptions`
 Configuration for filesystem traversal and parsing behavior.
 
-#### Attributes
+::: details Attributes
 
-##### `include_paths`
+| Name | Type | Description |
+| - | - | - |
+| `include_paths` | `list[str]` | glob patterns to include |
+| `exclude_paths` | `list[str]` | glob patterns to exclude |
+| `follow_symlinks` | `bool` | follow directory symlinks in traversal |
+| `module_depth` | `Optional[int]` | grouping depth for module buckets |
+| `fail_on_parse_error` | `bool` | raise on SyntaxError |
 
-Type: `list[str]`
-
-glob patterns to include
-
-##### `exclude_paths`
-
-Type: `list[str]`
-
-glob patterns to exclude
-
-##### `follow_symlinks`
-
-Type: `bool`
-
-follow directory symlinks in traversal
-
-##### `module_depth`
-
-Type: `Optional[int]`
-
-grouping depth for module buckets
-
-##### `fail_on_parse_error`
-
-Type: `bool`
-
-raise on SyntaxError
+:::
 
 ---
 
-### RenderOptions
+### `class RenderOptions`
 Configuration for how parsed docs are rendered into markdown.
 
-#### Methods
+::: details Attributes
 
-##### extension
+| Name | Type | Description |
+| - | - | - |
+| `output_format` | `Literal['md-nextra', 'md-plain']` | output format |
+| `output_extension` | `str | None` | override for .md/.mdx |
+| `include_types` | `list[str]` | sections to include |
+| `exclude_types` | `list[str]` | sections to exclude |
+| `include_private` | `bool` | include underscore-prefixed items |
+| `include_dunder` | `bool` | include __dunder__ names |
+| `sort` | `Literal['source-order', 'alpha']` | order of definitions |
+| `flatten` | `bool` | emit a single output file |
+| `split` | `Literal['off', 'only', 'hybrid']` | split output mode |
+| `index_title` | `str` | title for root index page |
+| `docstring_style` | `str` | raw, python-fences, preserve |
+| `code_fence_language` | `str` | language for unlabeled fences |
+| `show_line_numbers` | `bool` | add showLineNumbers in fences |
+
+:::
+
+::: details Methods
+
+##### `extension`
 
 **Signature**
 
@@ -58,111 +58,21 @@ def extension(self) -> str
 
 **Returns**: `str`
 
----
-
-#### Attributes
-
-##### `output_format`
-
-Type: `Literal['md-nextra', 'md-plain']`
-
-output format
-
-##### `output_extension`
-
-Type: `str | None`
-
-override for .md/.mdx
-
-##### `include_types`
-
-Type: `list[str]`
-
-sections to include
-
-##### `exclude_types`
-
-Type: `list[str]`
-
-sections to exclude
-
-##### `include_private`
-
-Type: `bool`
-
-include underscore-prefixed items
-
-##### `include_dunder`
-
-Type: `bool`
-
-include __dunder__ names
-
-##### `sort`
-
-Type: `Literal['source-order', 'alpha']`
-
-order of definitions
-
-##### `flatten`
-
-Type: `bool`
-
-emit a single output file
-
-##### `split`
-
-Type: `Literal['off', 'only', 'hybrid']`
-
-split output mode
-
-##### `index_title`
-
-Type: `str`
-
-title for root index page
-
-##### `docstring_style`
-
-Type: `str`
-
-raw, python-fences, preserve
-
-##### `code_fence_language`
-
-Type: `str`
-
-language for unlabeled fences
-
-##### `show_line_numbers`
-
-Type: `bool`
-
-add showLineNumbers in fences
+:::
 
 ---
 
-### ExportOptions
+### `class ExportOptions`
 Top-level export configuration (parse + render + output behavior).
 
-#### Attributes
+::: details Attributes
 
-##### `render`
+| Name | Type | Description |
+| - | - | - |
+| `render` | `RenderOptions` | render settings |
+| `parse` | `ParseOptions` | parse settings |
+| `clean` | `bool` | delete output directory before export |
 
-Type: `RenderOptions`
-
-render settings
-
-##### `parse`
-
-Type: `ParseOptions`
-
-parse settings
-
-##### `clean`
-
-Type: `bool`
-
-delete output directory before export
+:::
 
 ---

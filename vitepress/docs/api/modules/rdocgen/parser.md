@@ -6,12 +6,12 @@ data classes instead of the Python AST directly.
 
 ## Classes
 
-### Parser
+### `class Parser`
 Parse a single Python source file into documentation data classes.
 
-#### Methods
+::: details Methods
 
-##### parse
+##### `parse`
 
 **Signature**
 
@@ -24,15 +24,16 @@ def parse(self) -> FileDoc
 
 **Returns**: `Self`
 
----
+:::
 
 ---
 
 ## Functions
 
-### is_enum_class
-
+### `is_enum_class`
 Check if a class inherits from Enum (by name).
+
+::: details Description
 
 **Signature**
 
@@ -45,6 +46,8 @@ def is_enum_class(class_node: ast.AST) -> bool
 - **`class_node`** : `ast.AST` — candidate class node to test for Enum inheritance
 
 **Returns**: `bool`
+
+::: 
 
 ---
 
