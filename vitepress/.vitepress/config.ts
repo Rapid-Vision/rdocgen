@@ -13,9 +13,9 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     outline: [2, 4],
     nav: [
-      { text: 'Home', link: '/getting-started' },
-      { text: 'File sample', link: '/api/modules/rdocgen/example' },
-      { text: 'Documentation example', link: '/api' }
+      { text: 'Getting started', link: '/getting-started' },
+      { text: 'File example', link: '/api/modules/rdocgen/example' },
+      { text: 'Project example', link: '/api' }
     ],
 
     // sidebar: [
