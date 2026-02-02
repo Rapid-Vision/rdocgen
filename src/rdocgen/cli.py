@@ -57,6 +57,11 @@ def main():
         help="Module grouping depth (e.g., 1, 2, all).",
     )
     parser.add_argument(
+        "--project-name",
+        default="",
+        help="Override the project name shown in the index.",
+    )
+    parser.add_argument(
         "--clean",
         dest="clean",
         action="store_true",
@@ -162,6 +167,7 @@ def main():
     parse_options = ParseOptions(
         include_paths=args.include_path,
         exclude_paths=args.exclude_path,
+        project_name=args.project_name or None,
         follow_symlinks=args.follow_symlinks,
         module_depth=module_depth,
         fail_on_parse_error=args.fail_on_parse_error,

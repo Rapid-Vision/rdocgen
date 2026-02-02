@@ -1,6 +1,6 @@
 # Overview
 
-Project: `src`
+Project: `rdocgen`
 
 ## Modules
 

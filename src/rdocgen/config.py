@@ -12,6 +12,7 @@ class ParseOptions:
 
     include_paths: list[str] = field(default_factory=list)  # glob patterns to include
     exclude_paths: list[str] = field(default_factory=list)  # glob patterns to exclude
+    project_name: Optional[str] = None  # override for the displayed project name
     follow_symlinks: bool = False  # follow directory symlinks in traversal
     module_depth: Optional[int] = 1  # grouping depth for module buckets
     fail_on_parse_error: bool = False  # raise on SyntaxError

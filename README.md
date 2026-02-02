@@ -27,6 +27,7 @@ rdocgen -c src -o ./out_docs \
 ```bash
 rdocgen -c src -o ./out_docs \
   --module-depth 2 \
+  --project-name "My SDK" \
   --flatten \
   --index-title "API"
 ```
@@ -65,6 +66,7 @@ rdocgen -c src -o ./out_docs \
 - `--format`: `md-plain` or `md-nextra`.
 - `--include-path` / `--exclude-path`: Glob filters (repeatable).
 - `--module-depth`: Grouping depth (`1`, `2`, or `all`).
+- `--project-name`: Override the project name shown in indexes.
 - `--clean` / `--no-clean`: Control output dir deletion.
 - `--include-private` / `--include-dunder`: Include hidden members.
 - `--include-types` / `--exclude-types`: Filter by `class,function,enum,attribute`.

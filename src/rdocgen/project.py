@@ -17,8 +17,11 @@ def build_project(
 ) -> ProjectDoc:
     """Build a ProjectDoc from a file path or a directory root."""
     target = Path(path)
+    project_name = options.project_name
     if target.is_file():
-        project = ProjectDoc(name=target.stem, root_path=str(target.resolve()))
+        project = ProjectDoc(
+            name=project_name or target.stem, root_path=str(target.resolve())
+        )
         if path_allowed(target, target.parent, options):
             module = ModuleDoc(name=target.stem, path=str(target))
             file_doc = parse_file(
@@ -34,7 +37,9 @@ def build_project(
     if not target.is_dir():
         raise FileNotFoundError(f"Path not found: {path}")
 
-    project = ProjectDoc(name=target.name, root_path=str(target.resolve()))
+    project = ProjectDoc(
+        name=project_name or target.name, root_path=str(target.resolve())
+    )
     for module in _discover_modules(target, options):
         project.modules.append(module)
     return project

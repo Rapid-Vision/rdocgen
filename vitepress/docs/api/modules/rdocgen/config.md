@@ -13,6 +13,7 @@ Configuration for filesystem traversal and parsing behavior.
 | - | - | - |
 | `include_paths` | `list[str]` | glob patterns to include |
 | `exclude_paths` | `list[str]` | glob patterns to exclude |
+| `project_name` | `Optional[str]` | override for the displayed project name |
 | `follow_symlinks` | `bool` | follow directory symlinks in traversal |
 | `module_depth` | `Optional[int]` | grouping depth for module buckets |
 | `fail_on_parse_error` | `bool` | raise on SyntaxError |
