@@ -1,8 +1,24 @@
 # rdocgen
 
-Generate Markdown documentation from Python source files using an AST-based parser.
-The tool can scan a single file or an entire directory and export Markdown with
-configurable code-fence suffixes.
+`rdocgen` is an alternative to python documentation generators that use standard docstrings.
+It uses inline comments as source of descriptions and exports documentation in markdown files compatible with SSG tools such as [vitepress](https://vitepress.dev/).
+
+Write documentation like this:
+```python
+def example_function(
+    value: int,  # input integer
+    label: Optional[str] = None,  # optional label
+) -> str:
+```
+
+Generated with vitepress documentation will look like:
+![function docs example](example.png)
+
+## Why?
+- It is simpler then docstrings
+- It provides a single source of truth. Documentation drift from code becomes less likely.
+
+Use this project only if you do not rely on standard docstring tooling. 
 
 ## Usage
 
