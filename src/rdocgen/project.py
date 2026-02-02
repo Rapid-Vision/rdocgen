@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pathlib import Path
 from typing import List
 
@@ -51,7 +49,9 @@ def _discover_modules(
         full_module_name = module_name_from_path(file_path, root=root, depth=None)
         group_name = module_name or file_path.stem
         if group_name not in modules:
-            modules[group_name] = ModuleDoc(name=group_name, path=str(root / group_name))
+            modules[group_name] = ModuleDoc(
+                name=group_name, path=str(root / group_name)
+            )
         file_doc = parse_file(
             str(file_path),
             module_name=full_module_name or file_path.stem,

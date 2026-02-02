@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from .config import ExportOptions
 from .exporter import export_project
 from .project import build_project
