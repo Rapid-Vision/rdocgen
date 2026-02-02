@@ -8,7 +8,15 @@ import re
 from typing import Iterable, Sequence
 
 from ..config import RenderOptions
-from ..model import ClassDoc, EnumDoc, FileDoc, FunctionDoc, ModuleDoc, ProjectDoc
+from ..model import (
+    AttributeDoc,
+    ClassDoc,
+    EnumDoc,
+    FileDoc,
+    FunctionDoc,
+    ModuleDoc,
+    ProjectDoc,
+)
 
 
 class MarkdownRenderer:
