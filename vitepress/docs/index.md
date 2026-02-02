@@ -7,13 +7,13 @@ hero:
   tagline: Modern documentation from source code generator
   actions:
     - theme: brand
-      text: Get started
+      text: Get Started
       link: /getting-started
     - theme: alt
-      text: Single file docs sample
+      text: Single File Doc Example
       link: /api/modules/rdocgen/example
     - theme: alt
-      text: Folder docs example
+      text: Project Docs Example
       link: /api
 
 features:

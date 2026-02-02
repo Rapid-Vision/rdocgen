@@ -5,7 +5,7 @@ Markdown renderer for rdocgen outputs.
 ## Classes
 
 ### `class MarkdownRenderer`
-Render Project/Module/File docs into Markdown or Nextra-flavored Markdown.
+Render Project/Module/File docs into Markdown.
 
 ::: details Methods
 

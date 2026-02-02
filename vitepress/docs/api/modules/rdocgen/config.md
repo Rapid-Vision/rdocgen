@@ -29,7 +29,6 @@ Configuration for how parsed docs are rendered into markdown.
 
 | Name | Type | Description |
 | - | - | - |
-| `output_format` | `Literal['md-nextra', 'md-plain']` | output format |
 | `output_extension` | `str | None` | override for .md/.mdx |
 | `include_types` | `list[str]` | sections to include |
 | `exclude_types` | `list[str]` | sections to exclude |
@@ -41,7 +40,7 @@ Configuration for how parsed docs are rendered into markdown.
 | `index_title` | `str` | title for root index page |
 | `docstring_style` | `str` | raw, python-fences, preserve |
 | `code_fence_language` | `str` | language for unlabeled fences |
-| `show_line_numbers` | `bool` | add showLineNumbers in fences |
+| `code_fence_suffix` | `str` | extra tokens appended to opening fences |
 
 :::
 

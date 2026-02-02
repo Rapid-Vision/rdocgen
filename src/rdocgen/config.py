@@ -22,7 +22,6 @@ class ParseOptions:
 class RenderOptions:
     """Configuration for how parsed docs are rendered into markdown."""
 
-    output_format: Literal["md-nextra", "md-plain"] = "md-nextra"  # output format
     output_extension: str | None = None  # override for .md/.mdx
     include_types: list[str] = field(default_factory=list)  # sections to include
     exclude_types: list[str] = field(default_factory=list)  # sections to exclude
@@ -34,7 +33,7 @@ class RenderOptions:
     index_title: str = "Overview"  # title for root index page
     docstring_style: str = "python-fences"  # raw, python-fences, preserve
     code_fence_language: str = "python"  # language for unlabeled fences
-    show_line_numbers: bool = True  # add showLineNumbers in fences
+    code_fence_suffix: str = ""  # extra tokens appended to opening fences
 
     @property
     def extension(
@@ -42,7 +41,7 @@ class RenderOptions:
     ) -> str:
         if self.output_extension:
             return self.output_extension
-        return ".mdx" if self.output_format == "md-nextra" else ".md"
+        return ".md"
 
 
 @dataclass

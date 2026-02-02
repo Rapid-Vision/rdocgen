@@ -1,19 +1,19 @@
 # rdocgen
 
 Generate Markdown documentation from Python source files using an AST-based parser.
-The tool can scan a single file or an entire directory and export either plain
-Markdown or Nextra-flavored Markdown with copy/line-number code fences.
+The tool can scan a single file or an entire directory and export Markdown with
+configurable code-fence suffixes.
 
 ## Usage
 
 ### Single file
 ```bash
-rdocgen -c path/to/module.py -o ./out_docs --format md-nextra
+rdocgen -c path/to/module.py -o ./out_docs
 ```
 
 ### Directory
 ```bash
-rdocgen -c path/to/package -o ./out_docs --format md-plain
+rdocgen -c path/to/package -o ./out_docs
 ```
 
 ### Include / exclude files
@@ -57,13 +57,12 @@ rdocgen -c src -o ./out_docs \
 rdocgen -c src -o ./out_docs \
   --docstring-style python-fences \
   --code-fence-language python \
-  --no-line-numbers
+  --code-fence-suffix "copy showLineNumbers"
 ```
 
 ## CLI flags (high level)
 - `--code` / `-c`: File or directory to parse.
 - `--outdir` / `-o`: Output directory (deleted by default before export).
-- `--format`: `md-plain` or `md-nextra`.
 - `--include-path` / `--exclude-path`: Glob filters (repeatable).
 - `--module-depth`: Grouping depth (`1`, `2`, or `all`).
 - `--project-name`: Override the project name shown in indexes.
@@ -76,7 +75,7 @@ rdocgen -c src -o ./out_docs \
 - `--index-title`: Override root index title.
 - `--docstring-style`: `raw`, `python-fences`, or `preserve`.
 - `--code-fence-language`: Default language for unlabeled fences.
-- `--no-line-numbers`: Disable `showLineNumbers` for Nextra fences.
+- `--code-fence-suffix`: Extra tokens for opening fences (e.g., `copy showLineNumbers`).
 - `--output-extension`: Override `.md`/`.mdx`.
 - `--fail-on-parse-error`: Abort on invalid Python files.
 

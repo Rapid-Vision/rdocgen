@@ -18,7 +18,7 @@ from ..model import (
 
 
 class MarkdownRenderer:
-    """Render Project/Module/File docs into Markdown or Nextra-flavored Markdown."""
+    """Render Project/Module/File docs into Markdown."""
 
     def __init__(
         self,
@@ -547,23 +547,15 @@ class MarkdownRenderer:
         return None
 
     def _inline_type(self, annotation: str) -> str:  # type annotation to format
-        if self.options.output_format == "md-nextra":
-            return f"`{annotation}{{:python}}`"
         return f"`{annotation}`"
 
     def _code_block(self, code: str) -> str:  # code to wrap in a fenced block
-        if self.options.output_format == "md-nextra":
-            suffix = " showLineNumbers" if self.options.show_line_numbers else ""
-            return f"```python copy{suffix}\n{code}\n```"
-        return f"```python\n{code}\n```"
+        suffix = self._code_fence_suffix()
+        return f"```{self.options.code_fence_language}{suffix}\n{code}\n```"
 
     def _rewrite_docstring(self, docstring: str) -> str:  # docstring text to rewrite
         if not docstring:
             return ""
-        if self.options.output_format == "md-plain":
-            return docstring
-        if self.options.output_format != "md-nextra":
-            raise ValueError(f"Unsupported output format: {self.options.output_format}")
         if self.options.docstring_style == "raw":
             return docstring
 
@@ -586,15 +578,20 @@ class MarkdownRenderer:
     def _rewrite_opening_fence(
         self, fence: str  # opening fence line to rewrite
     ) -> str:
-        suffix = " showLineNumbers" if self.options.show_line_numbers else ""
+        suffix = self._code_fence_suffix()
         if self.options.docstring_style == "preserve":
-            if "copy" in fence:
-                return fence if suffix.strip() in fence else f"{fence}{suffix}"
-            return f"{fence} copy{suffix}" if fence != "```" else f"``` copy{suffix}"
+            if suffix.strip() and suffix.strip() in fence:
+                return fence
+            return f"{fence}{suffix}" if fence != "```" else f"```{suffix}"
         if self.options.docstring_style == "python-fences":
             if fence == "```":
-                return f"```{self.options.code_fence_language} copy{suffix}"
-            if "copy" in fence:
-                return fence if suffix.strip() in fence else f"{fence}{suffix}"
-            return f"{fence} copy{suffix}"
+                return f"```{self.options.code_fence_language}{suffix}"
+            if suffix.strip() and suffix.strip() in fence:
+                return fence
+            return f"{fence}{suffix}"
         return fence
+
+    def _code_fence_suffix(self) -> str:  # extra tokens for opening fences
+        if not self.options.code_fence_suffix.strip():
+            return ""
+        return f" {self.options.code_fence_suffix.strip()}"

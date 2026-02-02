@@ -29,12 +29,6 @@ def main():
         required=True,
     )
     parser.add_argument(
-        "--format",
-        choices=["md-plain", "md-nextra"],
-        default="md-nextra",
-        help="Output format for generated docs.",
-    )
-    parser.add_argument(
         "--include-path",
         action="append",
         default=[],
@@ -133,9 +127,9 @@ def main():
         help="Default language for unlabeled code fences.",
     )
     parser.add_argument(
-        "--no-line-numbers",
-        action="store_true",
-        help="Disable showLineNumbers for Nextra code fences.",
+        "--code-fence-suffix",
+        default="",
+        help="Extra tokens to append to opening fences (e.g., copy showLineNumbers).",
     )
     parser.add_argument(
         "--output-extension",
@@ -173,7 +167,6 @@ def main():
         fail_on_parse_error=args.fail_on_parse_error,
     )
     render_options = RenderOptions(
-        output_format=args.format,
         output_extension=args.output_extension or None,
         include_types=include_types,
         exclude_types=exclude_types,
@@ -185,7 +178,7 @@ def main():
         index_title=args.index_title,
         docstring_style=args.docstring_style,
         code_fence_language=args.code_fence_language,
-        show_line_numbers=not args.no_line_numbers,
+        code_fence_suffix=args.code_fence_suffix,
     )
     export_options = ExportOptions(
         render=render_options,
