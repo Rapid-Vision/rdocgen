@@ -26,7 +26,8 @@ def export_docs(
 
                 _safe_clean(outdir, force=options.force, dry_run=options.dry_run)
             if options.dry_run:
-                print(f"[dry-run] create directory: {outdir}")
+                if not Path(outdir).exists():
+                    print(f"[dry-run] create directory: {outdir}")
                 out_path = Path(outdir) / f"index{options.render.extension}"
                 print(f"[dry-run] write file: {out_path}")
             else:

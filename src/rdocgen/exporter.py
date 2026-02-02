@@ -18,18 +18,77 @@ def _safe_clean(
 ) -> None:
     if not os.path.exists(outdir):
         return
-    protected = {".git", ".hg", ".svn"}
-    if not force and not dry_run:
-        for name in protected:
-            if os.path.exists(os.path.join(outdir, name)):
-                raise RuntimeError(
-                    f"Refusing to delete protected directory {name} in {outdir}. "
-                    "Re-run with --force to allow this."
-                )
-    if dry_run:
-        print(f"[dry-run] delete directory: {outdir}")
+    if os.path.islink(outdir):
+        if not force:
+            message = (
+                f"Refusing to delete symlink output directory {outdir}. "
+                "Re-run with --force to allow this."
+            )
+            if dry_run:
+                print(f"[dry-run] skip clean: {message}")
+                return
+            raise RuntimeError(message)
+        if dry_run:
+            print(f"[dry-run] delete symlink: {outdir}")
+            return
+        os.unlink(outdir)
         return
-    shutil.rmtree(outdir)
+
+    protected_entries = _find_protected_entries(outdir)
+    if protected_entries and not force:
+        message = (
+            f"Refusing to delete protected entries in {outdir}: "
+            f"{', '.join(protected_entries)}. Re-run with --force to allow this."
+        )
+        if dry_run:
+            print(f"[dry-run] skip clean: {message}")
+            return
+        raise RuntimeError(message)
+    if dry_run:
+        print(f"[dry-run] delete contents: {outdir}")
+        return
+    for entry in os.listdir(outdir):
+        path = os.path.join(outdir, entry)
+        if os.path.islink(path) or os.path.isfile(path):
+            os.unlink(path)
+        else:
+            shutil.rmtree(path)
+
+
+def _find_protected_entries(outdir: str) -> list[str]:
+    protected: set[str] = set()
+    for root, dirnames, filenames in os.walk(outdir, followlinks=False):
+        rel_root = os.path.relpath(root, outdir)
+        if rel_root == ".":
+            rel_root = ""
+
+        for name in dirnames:
+            path = os.path.join(root, name)
+            rel = os.path.join(rel_root, name) if rel_root else name
+            if name.startswith(".") or os.path.islink(path):
+                protected.add(rel)
+
+        for name in filenames:
+            path = os.path.join(root, name)
+            rel = os.path.join(rel_root, name) if rel_root else name
+            if name.startswith(".") or os.path.islink(path):
+                protected.add(rel)
+                continue
+            _, ext = os.path.splitext(name)
+            if ext not in {".md", ".mdx"}:
+                protected.add(rel)
+
+    if not protected:
+        return []
+
+    parent_dirs: set[str] = set()
+    for rel in protected:
+        parts = rel.split(os.sep)
+        for i in range(1, len(parts)):
+            parent_dirs.add(os.path.join(*parts[:i]))
+    protected.update(parent_dirs)
+
+    return sorted(protected)
 
 
 def export_project(
@@ -43,7 +102,8 @@ def export_project(
     if options.clean:
         _safe_clean(outdir, force=options.force, dry_run=options.dry_run)
     if options.dry_run:
-        print(f"[dry-run] create directory: {outdir}")
+        if not os.path.exists(outdir):
+            print(f"[dry-run] create directory: {outdir}")
         print(
             f"[dry-run] write file: {os.path.join(outdir, f'index{options.render.extension}')}"
         )
@@ -73,14 +133,16 @@ def export_project(
 
     modules_dir = os.path.join(outdir, "modules")
     if options.dry_run:
-        print(f"[dry-run] create directory: {modules_dir}")
+        if not os.path.exists(modules_dir):
+            print(f"[dry-run] create directory: {modules_dir}")
     else:
         os.makedirs(modules_dir, exist_ok=True)
 
     for module in project.modules:
         module_dir = os.path.join(modules_dir, *module.name.split("."))
         if options.dry_run:
-            print(f"[dry-run] create directory: {module_dir}")
+            if not os.path.exists(module_dir):
+                print(f"[dry-run] create directory: {module_dir}")
         else:
             os.makedirs(module_dir, exist_ok=True)
         module_index = os.path.join(module_dir, f"index{options.render.extension}")
@@ -97,7 +159,9 @@ def export_project(
                 f"{relpath}{options.render.extension}",
             )
             if options.dry_run:
-                print(f"[dry-run] create directory: {os.path.dirname(file_path)}")
+                dir_path = os.path.dirname(file_path)
+                if not os.path.exists(dir_path):
+                    print(f"[dry-run] create directory: {dir_path}")
                 print(f"[dry-run] write file: {file_path}")
             else:
                 os.makedirs(os.path.dirname(file_path), exist_ok=True)
@@ -116,7 +180,8 @@ def export_single_file(
     if options.clean:
         _safe_clean(outdir, force=options.force, dry_run=options.dry_run)
     if options.dry_run:
-        print(f"[dry-run] create directory: {outdir}")
+        if not os.path.exists(outdir):
+            print(f"[dry-run] create directory: {outdir}")
         print(
             f"[dry-run] write file: {os.path.join(outdir, f'index{options.render.extension}')}"
         )
