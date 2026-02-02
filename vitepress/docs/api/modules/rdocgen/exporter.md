@@ -2,9 +2,11 @@
 
 ## Functions
 
-### export_project
+### `export_project`
 
 Write a ProjectDoc to disk using the configured renderer.
+
+::: details Description
 
 **Signature**
 
@@ -20,4 +22,4 @@ def export_project(project: ProjectDoc, outdir: str, options: ExportOptions) -> 
 
 **Returns**: `None`
 
----
+:::

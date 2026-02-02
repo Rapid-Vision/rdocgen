@@ -6,9 +6,11 @@ The output is structured for use with the [Nextra site generator](https://nextra
 
 ## Functions
 
-### main
+### `main`
 
 CLI entrypoint for rdocgen.
+
+::: details Description
 
 **Signature**
 
@@ -19,4 +21,4 @@ def main()
 **Arguments**
 
 
----
+:::

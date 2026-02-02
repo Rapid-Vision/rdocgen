@@ -31,6 +31,7 @@ def parse(self) -> FileDoc
 ## Functions
 
 ### `is_enum_class`
+
 Check if a class inherits from Enum (by name).
 
 ::: details Description
@@ -47,11 +48,11 @@ def is_enum_class(class_node: ast.AST) -> bool
 
 **Returns**: `bool`
 
-::: 
+:::
 
----
+### `check_function_returns_self`
 
-### check_function_returns_self
+::: details Description
 
 **Signature**
 
@@ -65,9 +66,11 @@ def check_function_returns_self(func: ast.FunctionDef | ast.AsyncFunctionDef) ->
 
 **Returns**: `bool`
 
----
+:::
 
-### get_function_signature
+### `get_function_signature`
+
+::: details Description
 
 **Signature**
 
@@ -81,11 +84,13 @@ def get_function_signature(node: ast.FunctionDef | ast.AsyncFunctionDef) -> str
 
 **Returns**: `str`
 
----
+:::
 
-### parse_source
+### `parse_source`
 
 Parse a Python source string into a structured documentation tree.
+
+::: details Description
 
 **Signature**
 
@@ -101,11 +106,13 @@ def parse_source(source: str, *, path: str='<memory>', module_name: str='<module
 
 **Returns**: `FileDoc`
 
----
+:::
 
-### parse_file
+### `parse_file`
 
 Parse a file path into a structured documentation tree.
+
+::: details Description
 
 **Signature**
 
@@ -122,4 +129,4 @@ def parse_file(path: str, encoding: str='utf-8', *, module_name: Optional[str]=N
 
 **Returns**: `Optional[FileDoc]`
 
----
+:::

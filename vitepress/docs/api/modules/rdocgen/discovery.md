@@ -2,9 +2,11 @@
 
 ## Functions
 
-### iter_python_files
+### `iter_python_files`
 
 Yield Python files under root, applying include/exclude rules.
+
+::: details Description
 
 **Signature**
 
@@ -19,11 +21,13 @@ def iter_python_files(root: Path, options: ParseOptions) -> Iterable[Path]
 
 **Returns**: `Iterable[Path]`
 
----
+:::
 
-### module_name_from_path
+### `module_name_from_path`
 
 Convert a file path into a dotted module path, with optional depth.
+
+::: details Description
 
 **Signature**
 
@@ -39,11 +43,13 @@ def module_name_from_path(path: Path, root: Optional[Path]=None, depth: Optional
 
 **Returns**: `str`
 
----
+:::
 
-### path_allowed
+### `path_allowed`
 
 Return True if a path matches include/exclude filters.
+
+::: details Description
 
 **Signature**
 
@@ -59,4 +65,4 @@ def path_allowed(path: Path, root: Path, options: ParseOptions) -> bool
 
 **Returns**: `bool`
 
----
+:::

@@ -224,7 +224,7 @@ class MarkdownRenderer:
         func: FunctionDoc,  # function to render
     ) -> str:
         """Render a standalone function page."""
-        return "\n".join(self._function_markdown(func, heading_level=1)).rstrip() + "\n"
+        return "\n".join(self._function_block(func, heading_level=1)).rstrip() + "\n"
 
     def enum_doc(
         self,
@@ -393,9 +393,50 @@ class MarkdownRenderer:
 
         content = [f"{'#' * section_level} Functions", ""]
         for func in functions:
-            content.extend(
-                self._function_markdown(func, heading_level=section_level + 1)
-            )
+            content.extend(self._function_block(func, heading_level=section_level + 1))
+        return content
+
+    def _function_block(
+        self,
+        func: FunctionDoc,  # function to render
+        *,
+        heading_level: int,  # heading level for the title
+    ) -> list[str]:
+        heading = "#" * heading_level
+        content = [f"{heading} `{func.name}`", ""]
+
+        summary = func.docstring.strip().splitlines()[0] if func.docstring.strip() else ""
+        if summary:
+            content.append(summary)
+            content.append("")
+
+        content.append("::: details Description")
+        content.append("")
+        content.append("**Signature**")
+        content.append("")
+        content.append(self._code_block(func.signature))
+        content.append("")
+
+        content.append("**Arguments**")
+        content.append("")
+        for arg in func.arguments:
+            if arg.name == "self" or arg.name.startswith("_"):
+                continue
+            line = f"- **`{arg.name}`**"
+            if arg.annotation:
+                line += f" : {self._inline_type(arg.annotation)}"
+            if arg.comment:
+                line += f" — {arg.comment}"
+            content.append(line)
+        content.append("")
+
+        returns_line = self._returns_line(func)
+        if returns_line:
+            content.append(returns_line)
+            content.append("")
+
+        content.append(":::")
+        content.append("")
         return content
 
     def _function_markdown(

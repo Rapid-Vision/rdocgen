@@ -2,9 +2,11 @@
 
 ## Functions
 
-### build_project
+### `build_project`
 
 Build a ProjectDoc from a file path or a directory root.
+
+::: details Description
 
 **Signature**
 
@@ -19,4 +21,4 @@ def build_project(path: str, options: ParseOptions) -> ProjectDoc
 
 **Returns**: `Self`
 
----
+:::
