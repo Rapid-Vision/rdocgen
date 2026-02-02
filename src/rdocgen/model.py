@@ -1,3 +1,7 @@
+"""
+Data models representing parsed documentation structure.
+"""
+
 from dataclasses import dataclass, field
 from typing import List, Optional
 

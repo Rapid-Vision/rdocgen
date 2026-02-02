@@ -1,7 +1,5 @@
 """
-Pure parser that converts Python source into a structured, renderer-agnostic
-representation. Exporters (Markdown, HTML, JSON, etc.) should consume these
-data classes instead of the Python AST directly.
+AST parser that converts Python source into structured documentation models.
 """
 
 import ast

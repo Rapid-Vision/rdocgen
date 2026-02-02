@@ -1,5 +1,7 @@
 # File: `model.py`
 
+Data models representing parsed documentation structure.
+
 ## Classes
 
 ### `class ArgumentDoc`

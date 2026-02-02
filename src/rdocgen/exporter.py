@@ -1,3 +1,7 @@
+"""
+Filesystem exporter that writes rendered docs to disk.
+"""
+
 import os
 import shutil
 

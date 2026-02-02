@@ -1,5 +1,7 @@
 # File: `config.py`
 
+Configuration dataclasses for parsing and rendering.
+
 ## Classes
 
 ### `class ParseOptions`

@@ -1,3 +1,7 @@
+"""
+Configuration dataclasses for parsing and rendering.
+"""
+
 from dataclasses import dataclass, field
 from typing import Literal, Optional
 

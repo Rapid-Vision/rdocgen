@@ -1,5 +1,7 @@
 # File: `markdown.py`
 
+Markdown renderer for rdocgen outputs.
+
 ## Classes
 
 ### `class MarkdownRenderer`

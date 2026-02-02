@@ -1,3 +1,7 @@
+"""
+Filesystem discovery utilities for locating Python sources.
+"""
+
 import fnmatch
 import os
 from pathlib import Path

@@ -1,3 +1,7 @@
+"""
+High-level export API for rdocgen.
+"""
+
 from .config import ExportOptions
 from .exporter import export_project
 from .project import build_project

@@ -1,5 +1,7 @@
 # File: `exporter.py`
 
+Filesystem exporter that writes rendered docs to disk.
+
 ## Functions
 
 ### `export_project`

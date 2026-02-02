@@ -1,3 +1,7 @@
+"""
+Markdown renderer for rdocgen outputs.
+"""
+
 import os
 from typing import Iterable, Sequence
 

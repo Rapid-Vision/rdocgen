@@ -1,5 +1,7 @@
 # File: `docs.py`
 
+High-level export API for rdocgen.
+
 ## Functions
 
 ### `export_docs`

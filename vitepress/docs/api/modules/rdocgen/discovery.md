@@ -1,5 +1,7 @@
 # File: `discovery.py`
 
+Filesystem discovery utilities for locating Python sources.
+
 ## Functions
 
 ### `iter_python_files`

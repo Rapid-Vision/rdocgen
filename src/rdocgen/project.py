@@ -1,3 +1,7 @@
+"""
+Project builder that groups parsed files into modules.
+"""
+
 from pathlib import Path
 from typing import List
 

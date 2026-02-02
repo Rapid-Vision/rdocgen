@@ -14,6 +14,7 @@ export default defineConfig({
     outline: [2, 4],
     nav: [
       { text: 'Home', link: '/getting-started' },
+      { text: 'File sample', link: '/api/modules/rdocgen/example' },
       { text: 'Documentation example', link: '/api' }
     ],
 

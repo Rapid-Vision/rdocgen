@@ -1,5 +1,7 @@
 # File: `project.py`
 
+Project builder that groups parsed files into modules.
+
 ## Functions
 
 ### `build_project`

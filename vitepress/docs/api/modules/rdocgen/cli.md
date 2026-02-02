@@ -1,8 +1,8 @@
 # File: `cli.py`
 
-Extracts documentation from a Python source file and generates Markdown files.
+Command-line interface for rdocgen.
 
-The output is structured for use with the [Nextra site generator](https://nextra.site/).
+Handles argument parsing and invokes the export pipeline.
 
 ## Functions
 
