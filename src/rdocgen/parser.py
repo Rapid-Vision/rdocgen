@@ -175,7 +175,7 @@ class Parser:
         )
 
         for node in self.module.body:
-            if is_enum_class(node):
+            if isinstance(node, ast.ClassDef) and is_enum_class(node):
                 module_doc.enums.append(self._parse_enum(node))
             elif isinstance(node, ast.ClassDef):
                 module_doc.classes.append(self._parse_class(node))
@@ -219,6 +219,7 @@ def check_function_returns_self(
 def get_function_signature(
     node: ast.FunctionDef | ast.AsyncFunctionDef  # function node to stringify
 ) -> str:
+    new_node: ast.FunctionDef | ast.AsyncFunctionDef
     if isinstance(node, ast.AsyncFunctionDef):
         new_node = ast.AsyncFunctionDef(
             name=node.name,
