@@ -6,7 +6,7 @@ import os
 import shutil
 
 from .config import ExportOptions
-from .model import ProjectDoc
+from .model import FileDoc, ProjectDoc
 from .render.markdown import MarkdownRenderer
 
 
@@ -58,3 +58,20 @@ def export_project(
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
             with open(file_path, "w", encoding="utf-8") as fout:
                 fout.write(renderer.file_doc(file_doc))
+
+
+def export_single_file(
+    file_doc: FileDoc,  # parsed file doc to export
+    outdir: str,  # output directory
+    options: ExportOptions,  # render/export configuration
+) -> None:
+    """Write a single FileDoc into one output file without indexes."""
+    renderer = MarkdownRenderer(options.render)
+
+    if os.path.exists(outdir) and options.clean:
+        shutil.rmtree(outdir)
+    os.makedirs(outdir, exist_ok=True)
+
+    out_path = os.path.join(outdir, f"index{options.render.extension}")
+    with open(out_path, "w", encoding="utf-8") as fout:
+        fout.write(renderer.file_doc(file_doc))
