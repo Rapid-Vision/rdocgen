@@ -18,15 +18,9 @@ export default defineConfig({
       { text: 'Project example', link: '/api' }
     ],
 
-    // sidebar: [
-    //   {
-    //     text: 'Examples',
-    //     items: [
-    //       { text: 'Markdown Examples', link: '/markdown-examples' },
-    //       { text: 'Runtime API Examples', link: '/api-examples' }
-    //     ]
-    //   }
-    // ],
+    search: {
+      provider: 'local'
+    },
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/Rapid-Vision/rdocgen' }

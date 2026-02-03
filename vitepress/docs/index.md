@@ -4,7 +4,7 @@ layout: home
 
 hero:
   text: "rdocgen"
-  tagline: Modern documentation from source code generator
+  tagline: Code‑first docs generation for python
   actions:
     - theme: brand
       text: Get started
@@ -19,7 +19,9 @@ hero:
 features:
   - title: Type annotation support
     details: Use type annotations as documentation
+  - title: Inline comments
+    details: Write argument descriptions as in-line comments
   - title: Export to markdown
-    details: Use resulting markdown with SSG like vitepress or nextra
+    details: Use resulting markdown with SSG like VitePress or Nextra
 
 ---
