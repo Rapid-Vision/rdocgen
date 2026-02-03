@@ -6,6 +6,9 @@ export default defineConfig({
 
   title: "rdocgen",
   description: "rdocgen documentation",
+
+  base: "/rdocgen",
+
   markdown: {
     lineNumbers: false
   },
