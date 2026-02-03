@@ -4,24 +4,28 @@ layout: home
 
 hero:
   text: "rdocgen"
-  tagline: Code‑first docs generation for python
+  tagline: Documentation from inline comments, shipped as Markdown
   actions:
     - theme: brand
       text: Get started
       link: /getting-started
     - theme: alt
-      text: Single file doc example
+      text: Single-file example
       link: /api/modules/rdocgen/example
     - theme: alt
-      text: Project docs example
+      text: Project example
       link: /api
 
 features:
-  - title: Type annotation support
-    details: Use type annotations as documentation
-  - title: Inline comments
-    details: Write argument descriptions as in-line comments
-  - title: Export to markdown
-    details: Use resulting markdown with SSG like VitePress or Nextra
+  - title: Inline comments, no docstring drift
+    details: Describe arguments and attributes where they are defined.
+  - title: Type annotations become docs
+    details: Render type hints alongside parameters and returns.
+  - title: VitePress-ready Markdown
+    details: Generates clean Markdown with stable anchors and sections.
 
 ---
+
+::: details See how it looks 
+![](./example.png)
+:::
