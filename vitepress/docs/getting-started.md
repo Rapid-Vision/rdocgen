@@ -22,6 +22,21 @@ Use this project only if you do not rely on standard docstring tooling.
 
 ## Usage
 
+Install with 
+::: code-group
+```uv
+uv tool install rdocgen
+```
+
+```pipx
+pipx install rdocgen
+```
+
+```pip
+pip install rdocgen
+```
+:::
+
 ### Single file
 ```bash
 rdocgen -c path/to/module.py -o ./out_docs

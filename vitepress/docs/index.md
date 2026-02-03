@@ -4,7 +4,7 @@ layout: home
 
 hero:
   text: "rdocgen"
-  tagline: Documentation from inline comments, shipped as Markdown
+  tagline: Markdown documentation generator from python source code
   actions:
     - theme: brand
       text: Get started
