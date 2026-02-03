@@ -1,7 +1,7 @@
 # rdocgen
 
 `rdocgen` is an alternative to python documentation generators that use standard docstrings.
-It uses inline comments as source of descriptions and exports documentation in markdown files compatible with SSG tools such as [vitepress](https://vitepress.dev/).
+It uses inline comments as the source of descriptions and exports documentation in markdown files compatible with SSG tools such as [VitePress](https://vitepress.dev/).
 
 Write documentation like this:
 ```python
@@ -11,12 +11,12 @@ def example_function(
 ) -> str:
 ```
 
-Generated with vitepress documentation will look like:
+Generated VitePress documentation will look like:
 ![function docs example](example.png)
 
 ## Why?
-- It is simpler then docstrings
-- It provides a single source of truth. Documentation drift from code becomes less likely.
+- It is simpler than docstrings.
+- It provides a single source of truth, so documentation drift is less likely.
 
 Use this project only if you do not rely on standard docstring tooling. 
 
@@ -26,6 +26,8 @@ Use this project only if you do not rely on standard docstring tooling.
 ```bash
 rdocgen -c path/to/module.py -o ./out_docs
 ```
+When `-c` points to a single file, `rdocgen` writes a single output file
+(`index.md` by default) with all content for that file.
 
 ### Directory
 ```bash
@@ -66,7 +68,7 @@ rdocgen -c src -o ./out_docs \
 
 ## CLI flags (high level)
 - `--code` / `-c`: File or directory to parse.
-- `--outdir` / `-o`: Output directory (deleted by default before export).
+- `--outdir` / `-o`: Output directory.
 - `--include-path` / `--exclude-path`: Glob filters (repeatable).
 - `--module-depth`: Grouping depth (`1`, `2`, or `all`).
 - `--project-name`: Override the project name shown in indexes.
@@ -85,5 +87,7 @@ rdocgen -c src -o ./out_docs \
 - `--fail-on-parse-error`: Abort on invalid Python files.
 
 ## Notes
-- Output directories are deleted by default before writing.
+- `--clean` deletes the contents of the output directory, not the directory itself.
+- Without `--force`, cleanup is blocked if the output dir contains hidden files,
+  symlinks, or files that are not `.md`/`.mdx`.
 - This project only reads source files; it does not execute code.
