@@ -29,7 +29,7 @@ Configuration for how parsed docs are rendered into markdown.
 
 | Name | Type | Description |
 | - | - | - |
-| `output_extension` | `str | None` | override for .md/.mdx |
+| `output_extension` | `str \| None` | override for .md/.mdx |
 | `include_types` | `list[str]` | sections to include |
 | `exclude_types` | `list[str]` | sections to exclude |
 | `include_private` | `bool` | include underscore-prefixed items |
@@ -45,7 +45,8 @@ Configuration for how parsed docs are rendered into markdown.
 
 ::: details Methods
 
-##### `extension`
+---
+#### `extension`
 
 **Signature**
 
@@ -59,6 +60,7 @@ def extension(self) -> str
 
 **Returns**: `str`
 
+---
 :::
 
 ---
@@ -73,6 +75,8 @@ Top-level export configuration (parse + render + output behavior).
 | `render` | `RenderOptions` | render settings |
 | `parse` | `ParseOptions` | parse settings |
 | `clean` | `bool` | delete output directory before export |
+| `force` | `bool` | allow deleting protected directories |
+| `dry_run` | `bool` | report actions without writing files |
 
 :::
 

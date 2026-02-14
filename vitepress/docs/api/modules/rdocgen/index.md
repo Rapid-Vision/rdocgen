@@ -38,6 +38,7 @@
 - [`module_name_from_path`](discovery.md#function-module-name-from-path)
 - [`path_allowed`](discovery.md#function-path-allowed)
 - [`export_project`](exporter.md#function-export-project)
+- [`export_single_file`](exporter.md#function-export-single-file)
 - [`export_docs`](docs.md#function-export-docs)
 - [`is_enum_class`](parser.md#function-is-enum-class)
 - [`check_function_returns_self`](parser.md#function-check-function-returns-self)

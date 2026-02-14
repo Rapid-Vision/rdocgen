@@ -36,12 +36,12 @@ class Parser:
 
     def _collect_comments(
         self, src: str  # source code text to scan for comments
-    ) -> dict[int, str]:
-        comments: dict[int, str] = {}
+    ) -> dict[int, list[tuple[int, str]]]:
+        comments: dict[int, list[tuple[int, str]]] = {}
         tokens = tokenize.generate_tokens(io.StringIO(src).readline)
         for tok_type, tok_string, start, _, _ in tokens:
             if tok_type == tokenize.COMMENT:
-                comments[start[0]] = tok_string[1:].strip()
+                comments.setdefault(start[0], []).append((start[1], tok_string[1:].strip()))
         return comments
 
     def _node_comments(
@@ -54,23 +54,66 @@ class Parser:
 
         parts: list[str] = []
         for line in range(start, end + 1):
-            comment = self.comments.get(line)
-            if comment is not None:
+            for _, comment in self.comments.get(line, []):
                 parts.append(comment)
+        return "\n".join(parts)
+
+    def _argument_comments(
+        self,
+        arg: ast.arg,  # argument node whose trailing comments to collect
+        *,
+        signature_end: int,  # end line of the function argument list
+        next_arg_start: int | None,  # starting line of the next argument, if any
+    ) -> str:
+        start = getattr(arg, "lineno", None)
+        if start is None:
+            return ""
+
+        end = next_arg_start - 1 if next_arg_start is not None else signature_end
+        if end < start:
+            end = start
+
+        parts: list[str] = []
+        min_col = getattr(arg, "col_offset", 0)
+        for line in range(start, end + 1):
+            for col, comment in self.comments.get(line, []):
+                if line != start or col >= min_col:
+                    parts.append(comment)
         return "\n".join(parts)
 
     def _parse_arguments(
         self, func: ast.FunctionDef | ast.AsyncFunctionDef  # function node to inspect
     ) -> list[ArgumentDoc]:
         args: list[ArgumentDoc] = []
+        if func.body:
+            signature_end = func.body[0].lineno - 1
+        else:
+            signature_end = getattr(func.args, "end_lineno", func.lineno)
+        all_args: list[tuple[ast.arg, str]] = []
+
+        for arg in func.args.posonlyargs:
+            all_args.append((arg, ""))
+        for arg in func.args.args:
+            all_args.append((arg, ""))
+        for arg in func.args.kwonlyargs:
+            all_args.append((arg, ""))
+        if func.args.vararg is not None:
+            all_args.append((func.args.vararg, "*"))
+        if func.args.kwarg is not None:
+            all_args.append((func.args.kwarg, "**"))
 
         def add_arg(
             arg: ast.arg,  # argument node to add
+            next_arg_start: int | None,  # start line of the next argument
             prefix: str = "",  # prefix to apply for var/kw args
         ) -> None:
             name = f"{prefix}{arg.arg}"
             ann = ast.unparse(arg.annotation) if arg.annotation else None
-            comment = self._node_comments(arg)
+            comment = self._argument_comments(
+                arg,
+                signature_end=signature_end,
+                next_arg_start=next_arg_start,
+            )
             args.append(
                 ArgumentDoc(
                     name=name,
@@ -80,17 +123,11 @@ class Parser:
                 )
             )
 
-        for arg in func.args.posonlyargs:
-            add_arg(arg)
-        for arg in func.args.args:
-            add_arg(arg)
-        for arg in func.args.kwonlyargs:
-            add_arg(arg)
-
-        if func.args.vararg is not None:
-            add_arg(func.args.vararg, prefix="*")
-        if func.args.kwarg is not None:
-            add_arg(func.args.kwarg, prefix="**")
+        for index, (arg, prefix) in enumerate(all_args):
+            next_arg_start = None
+            if index + 1 < len(all_args):
+                next_arg_start = all_args[index + 1][0].lineno
+            add_arg(arg, next_arg_start=next_arg_start, prefix=prefix)
 
         return args
 

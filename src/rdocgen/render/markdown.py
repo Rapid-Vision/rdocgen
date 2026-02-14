@@ -233,8 +233,10 @@ class MarkdownRenderer:
                 content.append("| Name | Type | Description |")
                 content.append("| - | - | - |")
                 for attr in attributes:
-                    desc = attr.comment or ""
-                    content.append(f"| `{attr.name}` | `{attr.annotation}` | {desc} |")
+                    name = self._escape_table_cell(f"`{attr.name}`")
+                    annotation = self._escape_table_cell(f"`{attr.annotation}`")
+                    desc = self._escape_table_cell(attr.comment or "")
+                    content.append(f"| {name} | {annotation} | {desc} |")
                 content.append("")
                 content.append(":::")
                 content.append("")
@@ -243,14 +245,16 @@ class MarkdownRenderer:
                 content.append("::: details Methods")
                 content.append("")
                 for method in methods:
+                    content.append("---")
                     content.extend(
                         self._function_markdown(
                             method,
-                            heading_level=item_heading_level + 2,
+                            heading_level=item_heading_level + 1,
                             code_heading=True,
                             include_separator=False,
                         )
                     )
+                    content.append("---")
                 content.append(":::")
                 content.append("")
 
@@ -289,8 +293,9 @@ class MarkdownRenderer:
                 content.append("| Name | Description |")
                 content.append("| - | - |")
                 for variant in enm.variants:
-                    desc = variant.comment or ""
-                    content.append(f"| `{variant.name}` | {desc} |")
+                    name = self._escape_table_cell(f"`{variant.name}`")
+                    desc = self._escape_table_cell(variant.comment or "")
+                    content.append(f"| {name} | {desc} |")
                 content.append("")
                 content.append(":::")
             content.append("")
@@ -472,6 +477,11 @@ class MarkdownRenderer:
 
     def _inline_type(self, annotation: str) -> str:  # type annotation to format
         return f"`{annotation}`"
+
+    def _escape_table_cell(
+        self, text: str  # cell text to make safe for markdown tables
+    ) -> str:
+        return text.replace("\\", "\\\\").replace("|", "\\|").replace("\n", "<br>")
 
     def _code_block(self, code: str) -> str:  # code to wrap in a fenced block
         suffix = self._code_fence_suffix()

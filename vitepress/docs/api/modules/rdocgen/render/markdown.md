@@ -9,7 +9,8 @@ Render Project/Module/File docs into Markdown.
 
 ::: details Methods
 
-##### `project_index`
+---
+#### `project_index`
 
 Render the root project index page.
 
@@ -26,7 +27,9 @@ def project_index(self, project: ProjectDoc, *, include_module_links: bool=True)
 
 **Returns**: `str`
 
-##### `module_index`
+---
+---
+#### `module_index`
 
 Render a module index page with file links and item anchors.
 
@@ -42,7 +45,9 @@ def module_index(self, module: ModuleDoc) -> str
 
 **Returns**: `str`
 
-##### `file_doc`
+---
+---
+#### `file_doc`
 
 Render a single file page with classes, enums, and functions.
 
@@ -59,7 +64,9 @@ def file_doc(self, file_doc: FileDoc, *, heading_level: int=1) -> str
 
 **Returns**: `str`
 
-##### `file_output_relpath`
+---
+---
+#### `file_output_relpath`
 
 Compute the relative output path for a file within a module.
 
@@ -76,6 +83,7 @@ def file_output_relpath(self, file_doc: FileDoc, module_prefix: str) -> str
 
 **Returns**: `str`
 
+---
 :::
 
 ---

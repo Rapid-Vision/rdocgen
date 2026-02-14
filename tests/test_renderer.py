@@ -2,7 +2,7 @@
 Unit tests for markdown rendering.
 """
 
-from rdocgen.model import ClassDoc, FileDoc, FunctionDoc, ModuleDoc
+from rdocgen.model import AttributeDoc, ClassDoc, FileDoc, FunctionDoc, ModuleDoc
 from rdocgen.render.markdown import MarkdownRenderer
 from rdocgen.config import RenderOptions
 
@@ -42,3 +42,36 @@ def test_file_doc_renders_custom_anchors() -> None:
 
     assert "{#class-sample}" in content
     assert "{#function-do-work}" in content
+
+
+def test_file_doc_escapes_pipes_in_attribute_tables() -> None:
+    file_doc = FileDoc(
+        path="src/example.py",
+        module_name="example",
+        docstring="",
+        classes=[
+            ClassDoc(
+                name="Sample",
+                bases=[],
+                docstring="",
+                methods=[],
+                attributes=[
+                    AttributeDoc(
+                        name="value",
+                        annotation="int | None",
+                        comment="optional | may be empty",
+                        lineno=1,
+                    )
+                ],
+                lineno=1,
+                is_private=False,
+            )
+        ],
+        functions=[],
+        enums=[],
+    )
+    renderer = MarkdownRenderer(RenderOptions())
+
+    content = renderer.file_doc(file_doc)
+
+    assert "| `value` | `int \\| None` | optional \\| may be empty |" in content

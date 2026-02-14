@@ -9,7 +9,8 @@ Parse a single Python source file into documentation data classes.
 
 ::: details Methods
 
-##### `parse`
+---
+#### `parse`
 
 **Signature**
 
@@ -22,6 +23,7 @@ def parse(self) -> FileDoc
 
 **Returns**: `Self`
 
+---
 :::
 
 ---

@@ -47,3 +47,27 @@ def example_function(arg: int) -> int:
 
     func_doc = file_doc.functions[0]
     assert func_doc.name == "example_function"
+
+
+def test_parse_source_keeps_trailing_comments_for_multiline_arguments() -> None:
+    source = '''
+import random
+import typing
+
+class ExampleClass:
+    def set_sampler(
+        self,
+        sampler: typing.Callable[
+            [random.Random], dict
+        ] = (
+            lambda _rng: {}
+        ),  # Samples a params dict from RNG
+    ) -> None:
+        pass
+'''
+    file_doc = parse_source(source, path="sample.py", module_name="sample")
+
+    method = file_doc.classes[0].methods[0]
+    sampler_arg = method.arguments[1]
+    assert sampler_arg.name == "sampler"
+    assert sampler_arg.comment == "Samples a params dict from RNG"

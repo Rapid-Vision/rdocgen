@@ -21,7 +21,8 @@ This is an example of class doc generation
 
 ::: details Methods
 
-##### `increment`
+---
+#### `increment`
 
 Increase the internal counter by the given step.
 
@@ -37,7 +38,9 @@ def increment(self, step: int) -> int
 
 **Returns**: `int`
 
-##### `rename`
+---
+---
+#### `rename`
 
 Return self after changing the name.
 
@@ -53,6 +56,7 @@ def rename(self, new_name: str) -> 'ExampleClass'
 
 **Returns**: `Self`
 
+---
 :::
 
 ---
@@ -84,13 +88,14 @@ Format a value with an optional label.
 **Signature**
 
 ```python
-def example_function(value: int, label: Optional[str]=None) -> str
+def example_function(value: int, label: Optional[str]=None, test: Callable[[random.Random], dict | int]=None) -> str
 ```
 
 **Arguments**
 
 - **`value`** : `int` — input integer
 - **`label`** : `Optional[str]` — optional label
+- **`test`** : `Callable[[random.Random], dict | int]` — Samples a params dict from RNG
 
 **Returns**: `str`
 

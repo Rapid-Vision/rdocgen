@@ -5,7 +5,8 @@ It doesn't have any useful functions or classes but is meant to represent everyt
 """
 
 from enum import Enum
-from typing import Literal, Optional
+from typing import Literal, Optional, Callable
+import random
 
 
 class ExampleClass:
@@ -59,6 +60,9 @@ class ExampleEnum(Enum):
 def example_function(
     value: int,  # input integer
     label: Optional[str] = None,  # optional label
+    test: Callable[
+        [random.Random], dict | int
+    ] = None,  # Samples a params dict from RNG
 ) -> str:
     """
     Format a value with an optional label.
