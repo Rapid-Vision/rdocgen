@@ -1,6 +1,6 @@
 [project]
 name = "rdocgen"
-version = "0.1.0"
+version = "0.1.1"
 description = "Markdown documentation generator from python source code"
 license = "MIT"
 license-files = ["LICENSE"]
