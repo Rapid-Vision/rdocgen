@@ -1,0 +1,26 @@
+# File: `project.py`
+
+Project builder that groups parsed files into modules.
+
+## Functions
+
+### `build_project` {#function-build-project}
+
+Build a ProjectDoc from a file path or a directory root.
+
+::: details Details
+
+**Signature**
+
+```python
+def build_project(path: str, options: ParseOptions) -> ProjectDoc
+```
+
+**Arguments**
+
+- **`path`** : `str` — file path or directory root to parse
+- **`options`** : `ParseOptions` — traversal and parse behavior
+
+**Returns**: `Self`
+
+:::

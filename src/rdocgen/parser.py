@@ -6,7 +6,6 @@ import ast
 import io
 import tokenize
 from pathlib import Path
-from typing import Optional
 
 from .model import (
     ArgumentDoc,
@@ -17,6 +16,10 @@ from .model import (
     FileDoc,
     FunctionDoc,
 )
+
+
+class ParseError(RuntimeError):
+    """Raised when a Python source file cannot be parsed."""
 
 
 class Parser:
@@ -293,9 +296,8 @@ def parse_file(
     path: str,  # file path to parse
     encoding: str = "utf-8",  # file encoding
     *,
-    module_name: Optional[str] = None,  # dotted module path for this file
-    fail_on_parse_error: bool = False,  # raise if a SyntaxError occurs
-) -> Optional[FileDoc]:
+    module_name: str | None = None,  # dotted module path for this file
+) -> FileDoc:
     """Parse a file path into a structured documentation tree."""
     file_path = Path(path)
     try:
@@ -306,7 +308,10 @@ def parse_file(
                 path=str(file_path),
                 module_name=resolved_module_name,
             )
-    except SyntaxError:
-        if fail_on_parse_error:
-            raise
-        return None
+    except SyntaxError as exc:
+        location = str(file_path)
+        if exc.lineno is not None:
+            location = f"{location}:{exc.lineno}"
+            if exc.offset is not None:
+                location = f"{location}:{exc.offset}"
+        raise ParseError(f"Failed to parse {location}: {exc.msg}") from exc

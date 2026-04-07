@@ -135,11 +135,6 @@ def main():
         default="",
         help="Override output extension (e.g., .md, .mdx).",
     )
-    parser.add_argument(
-        "--fail-on-parse-error",
-        action="store_true",
-        help="Abort when a Python file fails to parse.",
-    )
     args = parser.parse_args()
 
     include_types = [t.strip() for t in args.include_types.split(",") if t.strip()]
@@ -160,7 +155,6 @@ def main():
         project_name=args.project_name or None,
         follow_symlinks=args.follow_symlinks,
         module_depth=module_depth,
-        fail_on_parse_error=args.fail_on_parse_error,
     )
     render_options = RenderOptions(
         output_extension=args.output_extension or None,
@@ -183,11 +177,14 @@ def main():
         dry_run=args.dry_run,
     )
 
-    export_docs(
-        codepath=args.code,
-        outdir=args.outdir,
-        options=export_options,
-    )
+    try:
+        export_docs(
+            codepath=args.code,
+            outdir=args.outdir,
+            options=export_options,
+        )
+    except Exception as exc:
+        raise SystemExit(str(exc)) from exc
 
 
 if __name__ == "__main__":

@@ -17,24 +17,9 @@ def export_docs(
     """High-level entrypoint: parse sources and export documentation."""
     project = build_project(codepath, options.parse)
     if Path(codepath).is_file():
-        file_doc = None
-        if project.modules and project.modules[0].files:
-            file_doc = project.modules[0].files[0]
-        if file_doc is None:
-            if Path(outdir).exists() and options.clean:
-                from .exporter import _safe_clean
-
-                _safe_clean(outdir, force=options.force, dry_run=options.dry_run)
-            if options.dry_run:
-                if not Path(outdir).exists():
-                    print(f"[dry-run] create directory: {outdir}")
-                out_path = Path(outdir) / f"index{options.render.extension}"
-                print(f"[dry-run] write file: {out_path}")
-            else:
-                Path(outdir).mkdir(parents=True, exist_ok=True)
-                out_path = Path(outdir) / f"index{options.render.extension}"
-                out_path.write_text("_No content found._\n", encoding="utf-8")
-        else:
-            export_single_file(file_doc=file_doc, outdir=outdir, options=options)
+        if not project.modules or not project.modules[0].files:
+            raise RuntimeError(f"No documentation content found in {codepath}")
+        file_doc = project.modules[0].files[0]
+        export_single_file(file_doc=file_doc, outdir=outdir, options=options)
         return
     export_project(project, outdir, options)

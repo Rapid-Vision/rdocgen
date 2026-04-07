@@ -27,11 +27,9 @@ def build_project(
             file_doc = parse_file(
                 str(target),
                 module_name=target.stem,
-                fail_on_parse_error=options.fail_on_parse_error,
             )
-            if file_doc is not None:
-                module.files.append(file_doc)
-                project.modules.append(module)
+            module.files.append(file_doc)
+            project.modules.append(module)
         return project
 
     if not target.is_dir():
@@ -64,9 +62,6 @@ def _discover_modules(
         file_doc = parse_file(
             str(file_path),
             module_name=full_module_name or file_path.stem,
-            fail_on_parse_error=options.fail_on_parse_error,
         )
-        if file_doc is None:
-            continue
         modules[group_name].files.append(file_doc)
     return sorted(modules.values(), key=lambda m: m.name)

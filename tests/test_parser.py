@@ -2,7 +2,11 @@
 Unit tests for the AST parser.
 """
 
-from rdocgen.parser import parse_source
+import pathlib
+
+import pytest
+
+from rdocgen.parser import ParseError, parse_file, parse_source
 
 
 def test_parse_source_extracts_top_level_items() -> None:
@@ -71,3 +75,13 @@ class ExampleClass:
     sampler_arg = method.arguments[1]
     assert sampler_arg.name == "sampler"
     assert sampler_arg.comment == "Samples a params dict from RNG"
+
+
+def test_parse_file_raises_with_location_for_syntax_error(
+    tmp_path: pathlib.Path,
+) -> None:
+    source_path = tmp_path / "broken.py"
+    source_path.write_text("def broken(:\n    pass\n", encoding="utf-8")
+
+    with pytest.raises(ParseError, match=r"Failed to parse .*broken.py:1:12"):
+        parse_file(str(source_path))

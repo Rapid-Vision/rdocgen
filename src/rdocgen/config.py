@@ -15,7 +15,7 @@ class ParseOptions:
     project_name: Optional[str] = None  # override for the displayed project name
     follow_symlinks: bool = False  # follow directory symlinks in traversal
     module_depth: Optional[int] = 1  # grouping depth for module buckets
-    fail_on_parse_error: bool = False  # raise on SyntaxError
+    fail_on_parse_error: bool = True  # retained for compatibility; parsing is strict
 
 
 @dataclass

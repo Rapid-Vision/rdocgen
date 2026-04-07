@@ -84,10 +84,10 @@ rdocgen -c src -o ./out_docs \
 - `--code-fence-language`: Default language for unlabeled fences.
 - `--code-fence-suffix`: Extra tokens for opening fences (e.g., `copy showLineNumbers`).
 - `--output-extension`: Override `.md`/`.mdx`.
-- `--fail-on-parse-error`: Abort on invalid Python files.
 
 ## Notes
 - `--clean` deletes the contents of the output directory, not the directory itself.
 - Without `--force`, cleanup is blocked if the output dir contains hidden files,
   symlinks, or files that are not `.md`/`.mdx`.
+- Invalid Python input aborts the run with a parse error; files are not skipped.
 - This project only reads source files; it does not execute code.
